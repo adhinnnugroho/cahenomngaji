@@ -1,0 +1,1 @@
+export const welcomeScreenBackground = "@/assets/images/welcomeScreenBackground.png";
