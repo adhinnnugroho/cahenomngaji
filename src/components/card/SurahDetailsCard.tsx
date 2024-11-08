@@ -1,4 +1,15 @@
-const SurahDetailsCard = ({ teksArab, teksLatin, surah, index, playingIndex, handleAudioPlayback, audio }: any) => {
+
+type SurahDetailsCardProps = {
+    teksArab: string
+    teksLatin: string
+    surah: any
+    index: number
+    playingIndex: number
+    handleAudioPlayback: (index: number) => void
+    audio: string
+}
+
+const SurahDetailsCard = ({ teksArab, teksLatin, surah, index, playingIndex, handleAudioPlayback, audio }: SurahDetailsCardProps) => {
     return (
         <div className="block">
             <div className="text-2xl mb-6 bg-gray-200 rounded-lg p-3">

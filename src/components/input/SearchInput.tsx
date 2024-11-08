@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-
 type SearchInputPropsType = {
     'onChange'?: (e: any) => void,
     'handleAnimationSearchInput'?: () => void

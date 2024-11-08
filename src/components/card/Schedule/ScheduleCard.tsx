@@ -1,4 +1,9 @@
-const ScheduleCard = ({ Jadwal, title }: any) => {
+type ScheduleCardProps = {
+    title: string
+    Jadwal: string
+}
+
+const ScheduleCard = ({ Jadwal, title }: ScheduleCardProps) => {
     return (
         <div className="col-span-1 pb-1">
             <div className="grid grid-cols-3 gap-4">

@@ -3,10 +3,10 @@ import { IconsNumber } from "@/assets/images/ImageManagement"
 import Link from "next/link"
 
 type SurahPropsType = {
-    'SurahNumber': any,
-    'SurahNameLatin': any,
-    'tempatTurun': any,
-    'jumlahAyat': any,
+    'SurahNumber': number,
+    'SurahNameLatin': string,
+    'tempatTurun': string,
+    'jumlahAyat': number,
     'link'?: string | URL,
     'SurahNameTransliteration': any
 }

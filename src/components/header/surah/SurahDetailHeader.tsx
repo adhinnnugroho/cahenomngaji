@@ -1,7 +1,14 @@
 import Image from "next/image";
 import { surahDetailsBackground, Bismillah } from "@/assets/images/ImageManagement"
 
-const SurahDetailHeader = ({ nameSurah, ayat, arti, tempatTurun }: any) => {
+type SurahDetailHeaderProps = {
+    nameSurah: string,
+    ayat: number,
+    arti: string,
+    tempatTurun: string
+}
+
+const SurahDetailHeader = ({ nameSurah, ayat, arti, tempatTurun }: SurahDetailHeaderProps) => {
     return (
         <div className="text-center mt-4 bg-cover bg-center h-auto rounded-xl p-9" style={{ backgroundImage: `url(${surahDetailsBackground.src})` }} >
             <h1 className="text-4xl font-bold">
