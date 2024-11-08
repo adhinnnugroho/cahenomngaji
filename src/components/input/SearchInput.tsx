@@ -1,5 +1,5 @@
 type SearchInputPropsType = {
-    'onChange'?: (e: any) => void,
+    'onChange'?: (e: React.ChangeEvent<HTMLInputElement>) => void,
     'handleAnimationSearchInput'?: () => void
 }
 
