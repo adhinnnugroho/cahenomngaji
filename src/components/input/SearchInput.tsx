@@ -5,8 +5,6 @@ type SearchInputPropsType = {
     'handleAnimationSearchInput'?: () => void
 }
 
-
-
 const SearchInput = ({ onChange, handleAnimationSearchInput }: SearchInputPropsType) => {
     return (
         <div className="relative w-full transition-all duration-300 ease-in-out">

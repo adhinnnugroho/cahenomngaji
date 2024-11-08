@@ -64,7 +64,7 @@ const HomePage = () => {
                     <div className="w-full mb-20 mt-10">
                         {filteredSurahs.map((surah: any, index: number) =>
                             <SurahCard SurahNumber={surah.nomor} SurahNameLatin={surah.namaLatin} tempatTurun={surah.tempatTurun}
-                                SurahNameTransliteration={surah.nama} link={`/Surah/${surah.nomor}`} jumlahAyat={surah.jumlahAyat} key={index} />
+                                SurahNameTransliteration={surah.nama} link={`/home/surah/${surah.nomor}`} jumlahAyat={surah.jumlahAyat} key={index} />
                         )}
                     </div>
                 </div>

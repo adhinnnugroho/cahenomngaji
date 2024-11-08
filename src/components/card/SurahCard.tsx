@@ -14,7 +14,7 @@ type SurahPropsType = {
 
 const SurahCard = ({ SurahNumber, SurahNameLatin, tempatTurun, SurahNameTransliteration, link, jumlahAyat }: SurahPropsType) => {
     return (
-        <Link href={link ? link.toString() : `/Surah/${SurahNumber}`}>
+        <Link href={link ? link.toString() : `/home/surah/${SurahNumber}`}>
             <div className="flex flex-wrap gap-3 mb-4 border border-transparent border-b-gray-600">
                 <div className="relative text-2xl mb-4 flex-shrink-0">
                     <Image src={IconsNumber} width={330} height={60} alt="ramadhan" className="w-12" />
