@@ -76,7 +76,7 @@ const useSurahData = () => {
 
 
 
-    return { surah, handleSearch, totalDataCount, loadedDataCount, debouncedSearch }
+    return { surah, handleSearch, totalDataCount, loadedDataCount, debouncedSearch, searchParam }
 
 }
 

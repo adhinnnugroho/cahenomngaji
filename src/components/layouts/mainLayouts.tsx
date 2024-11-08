@@ -2,7 +2,7 @@ import MobileNavigation from "@/components/navigations/MobileNavigation";
 import Navigation from "../navigations/Navigation";
 import BackNavigations from "../navigations/BackNavigations";
 
-const MainLayouts = ({ children, NavigationType, linkNavigation, NavbarTitle, title }: any) => {
+const MainLayouts = ({ children, NavigationType, linkNavigation, NavbarTitle }: any) => {
     return <>
         {NavigationType !== "none" && (
             NavigationType === "Back"
