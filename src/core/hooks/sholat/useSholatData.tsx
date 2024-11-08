@@ -15,7 +15,7 @@ export async function retrieveUserLocations(latitude: number, longitude: number)
 
 export async function retrieveSpecificCityData(city: string) {
     try {
-        const cityDataResponse = await SholatServices.getCityId(city);;
+        const cityDataResponse = await SholatServices.getCityId(city);
         const cityData = cityDataResponse.data.data[0];
 
         return cityData;
@@ -24,6 +24,7 @@ export async function retrieveSpecificCityData(city: string) {
         throw new Error('Failed to retrieve city data');
     }
 }
+
 
 export async function retrieveScheduleSholatDaily(cityId: number, year: number, month: number, date: number) {
 
