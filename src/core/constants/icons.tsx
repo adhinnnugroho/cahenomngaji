@@ -1,0 +1,1 @@
+export const homeIcons = "@/assets/icons/HomeIcon.png";

@@ -1,11 +1,11 @@
 import MainLayouts from "@/components/layouts/mainLayouts"
 
-const HomePage = () => {
+const SholatPage = () => {
     return (
         <MainLayouts>
-            homePage
+            Sholat Page
         </MainLayouts>
     )
 }
 
-export default HomePage
+export default SholatPage

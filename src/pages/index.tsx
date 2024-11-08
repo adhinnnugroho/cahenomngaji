@@ -4,8 +4,8 @@ import welcomeScreenBackground from "@/assets/images/welcomeScreenBackground.png
 
 export default function Home() {
   return (
-    <>
-      <div className="text-center">
+    <div className="flex items-center justify-center max-h-screen">
+      <div className="block text-center">
         <h5 className="text-indigo-700 text-3xl font-bold mt-10">
           CAHENOMNGAJI
         </h5>
@@ -21,6 +21,6 @@ export default function Home() {
           </SimpleButton>
         </div>
       </div>
-    </>
+    </div>
   );
 }

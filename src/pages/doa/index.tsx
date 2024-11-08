@@ -1,11 +1,11 @@
 import MainLayouts from "@/components/layouts/mainLayouts"
 
-const HomePage = () => {
+const DoaPage = () => {
     return (
         <MainLayouts>
-            homePage
+            Doa Page
         </MainLayouts>
     )
 }
 
-export default HomePage
+export default DoaPage
