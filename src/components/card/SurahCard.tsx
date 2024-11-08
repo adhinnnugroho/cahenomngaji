@@ -8,11 +8,10 @@ type SurahPropsType = {
     'tempatTurun': string,
     'jumlahAyat': number,
     'link'?: string | URL,
-    'SurahNameTransliteration': string
 }
 
 
-const SurahCard = ({ SurahNumber, SurahNameLatin, tempatTurun, SurahNameTransliteration, link, jumlahAyat }: SurahPropsType) => {
+const SurahCard = ({ SurahNumber, SurahNameLatin, tempatTurun, link, jumlahAyat }: SurahPropsType) => {
     return (
         <Link href={link ? link.toString() : `/home/surah/${SurahNumber}`}>
             <div className="flex flex-wrap gap-3 mb-4 border border-transparent border-b-gray-600">
@@ -30,7 +29,6 @@ const SurahCard = ({ SurahNumber, SurahNameLatin, tempatTurun, SurahNameTranslit
                             <p>{tempatTurun} - {jumlahAyat} Ayat</p>
                         </div>
                         <div className="col-span-1 flex justify-end items-center">
-                            <h2 className="text-2xl text-purple-700 font-bold">{SurahNameTransliteration}</h2>
                         </div>
                     </div>
                 </div>
