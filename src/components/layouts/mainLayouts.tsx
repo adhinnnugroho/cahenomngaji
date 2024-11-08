@@ -4,7 +4,11 @@ import BackNavigations from "../navigations/BackNavigations";
 
 const MainLayouts = ({ children, NavigationType, linkNavigation, NavbarTitle, title }: any) => {
     return <>
-        {NavigationType === "Back" ? <BackNavigations SurahName={NavbarTitle} link={linkNavigation} /> : <Navigation />}
+        {NavigationType !== "none" && (
+            NavigationType === "Back"
+                ? <BackNavigations SurahName={NavbarTitle} link={linkNavigation} />
+                : <Navigation />
+        )}
 
         {children}
         <MobileNavigation />
