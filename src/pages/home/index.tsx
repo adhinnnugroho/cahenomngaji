@@ -1,5 +1,5 @@
 import MainLayouts from "@/components/layouts/mainLayouts"
-import { LastReadBackground, IconsNumber } from "@/assets/images/ImageManagement"
+import { LastReadBackground } from "@/assets/images/ImageManagement"
 import Image from "next/image"
 import { useMemo, useState } from "react";
 import useSurahData from "@/core/hooks/surah/useSurahData";
