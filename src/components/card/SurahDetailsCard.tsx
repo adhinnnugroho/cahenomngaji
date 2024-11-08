@@ -2,7 +2,11 @@
 type SurahDetailsCardProps = {
     teksArab: string
     teksLatin: string
-    surah: any
+    surah: {
+        nomorAyat: number
+        teksArab: string
+        teksLatin: string
+    }
     index: number
     playingIndex: number
     handleAudioPlayback: (index: number) => void

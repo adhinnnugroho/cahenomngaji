@@ -8,7 +8,7 @@ type SurahPropsType = {
     'tempatTurun': string,
     'jumlahAyat': number,
     'link'?: string | URL,
-    'SurahNameTransliteration': any
+    'SurahNameTransliteration': string
 }
 
 
