@@ -1,5 +1,6 @@
 import MainLayouts from "@/components/layouts/mainLayouts"
 import { LastReadBackground } from "@/assets/images/ImageManagement"
+import { loadingSearchAnimations } from "@/assets/loading"
 import Image from "next/image"
 import { useMemo, useState } from "react";
 import useSurahData from "@/core/hooks/surah/useSurahData";
@@ -61,13 +62,12 @@ const HomePage = () => {
 
                     <div className="mb-20 mt-10 p-2">
                         {loading ? (
-                            <p>
-                                loading
-                            </p>
+                            <Image src={loadingSearchAnimations} width={330} height={60} alt="ramadhan" className="mx-auto" />
                         ) : (
                             filteredSurahs.map((surah: any, index: number) =>
                                 <SurahCard SurahNumber={surah.nomor} SurahNameLatin={surah.namaLatin} tempatTurun={surah.tempatTurun}
                                     link={`/home/surah/${surah.nomor}`} jumlahAyat={surah.jumlahAyat} key={index} />
+
                             )
                         )}
                     </div>
