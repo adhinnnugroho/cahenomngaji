@@ -1,7 +1,5 @@
 import SearchInput from "@/components/input/SearchInput"
 import MainLayouts from "@/components/layouts/mainLayouts"
-import { retrieveAllDoa } from "@/core/hooks/doa/useDoaData";
-import { useCallback, useEffect, useState } from "react";
 
 const DoaPage = () => {
     const [animationSearchInput, setAnimationSearchInput] = useState(false);
