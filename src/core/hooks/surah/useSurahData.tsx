@@ -16,11 +16,14 @@ const useSurahData = () => {
     const [loadedDataCount, setLoadedDataCount] = useState<number>(5);
     const [totalDataCount, setTotalDataCount] = useState<number>(0);
     const [searchParam, setSearchParam] = useState<string>('');
+    const [loading, setLoading] = useState(true);
+
 
     const getAllSurah = useCallback(async () => {
         const responseSurah = await retrieveDataSurah();
         setTotalDataCount(responseSurah.length);
         setSurah(responseSurah.slice(0, loadedDataCount));
+        setLoading(false);
     }, [loadedDataCount]);
 
 
@@ -40,12 +43,14 @@ const useSurahData = () => {
         } else if (scrollTop === 0 && loadedDataCount > 5) {
             setLoadedDataCount(5);
         }
+        setLoading(false);
     }, [loadedDataCount, totalDataCount, loadMoreData]);
 
     useEffect(() => {
         window.addEventListener('scroll', handleScroll);
         return () => {
             window.removeEventListener('scroll', handleScroll);
+            setLoading(false);
         };
     }, [handleScroll]);
 
@@ -55,12 +60,14 @@ const useSurahData = () => {
                 const responseSurah = await retrieveDataSurah();
                 if (searchValue === '') {
                     setSurah(responseSurah.slice(0, loadedDataCount));
+                    setLoading(false);
                 } else {
                     setSurah(
                         responseSurah.filter((surah: any) =>
                             surah.namaLatin.toLowerCase().includes(searchValue.toLowerCase())
                         )
                     );
+                    setLoading(false);
                 }
             }, 300); // Adjust debounce delay as needed
 
@@ -72,11 +79,12 @@ const useSurahData = () => {
     const handleSearch = (searchValue: string) => {
         setSearchParam(searchValue);
         debouncedSearch(searchValue);
+        setLoading(false);
     };
 
 
 
-    return { surah, handleSearch, totalDataCount, loadedDataCount, debouncedSearch, searchParam }
+    return { surah, handleSearch, totalDataCount, loadedDataCount, debouncedSearch, searchParam, loading }
 
 }
 

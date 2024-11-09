@@ -10,7 +10,7 @@ const HomePage = () => {
 
     const [animationSearchInput, setAnimationSearchInput] = useState(false);
     const [searchParam, setSearchParam] = useState<string>('');
-    const { surah, handleSearch, debouncedSearch } = useSurahData();
+    const { surah, handleSearch, debouncedSearch, loading } = useSurahData();
 
 
     const handleAnimationSearchInput = () => {
@@ -20,8 +20,6 @@ const HomePage = () => {
             debouncedSearch(searchParam);
         }
     }
-
-
 
     const filteredSurahs = useMemo(() => {
         return surah.filter((surahItem: any) =>
@@ -61,10 +59,16 @@ const HomePage = () => {
                     </div>
 
 
-                    <div className="w-full mb-20 mt-10">
-                        {filteredSurahs.map((surah: any, index: number) =>
-                            <SurahCard SurahNumber={surah.nomor} SurahNameLatin={surah.namaLatin} tempatTurun={surah.tempatTurun}
-                                link={`/home/surah/${surah.nomor}`} jumlahAyat={surah.jumlahAyat} key={index} />
+                    <div className="mb-20 mt-10 p-2">
+                        {loading ? (
+                            <p>
+                                loading
+                            </p>
+                        ) : (
+                            filteredSurahs.map((surah: any, index: number) =>
+                                <SurahCard SurahNumber={surah.nomor} SurahNameLatin={surah.namaLatin} tempatTurun={surah.tempatTurun}
+                                    link={`/home/surah/${surah.nomor}`} jumlahAyat={surah.jumlahAyat} key={index} />
+                            )
                         )}
                     </div>
                 </div>

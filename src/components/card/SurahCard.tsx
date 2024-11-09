@@ -23,12 +23,10 @@ const SurahCard = ({ SurahNumber, SurahNameLatin, tempatTurun, link, jumlahAyat 
                 </div>
 
                 <div className="flex flex-col justify-between flex-grow">
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4">
                         <div className="col-span-1">
                             <h2 className="text-xl font-bold">{SurahNameLatin}</h2>
                             <p>{tempatTurun} - {jumlahAyat} Ayat</p>
-                        </div>
-                        <div className="col-span-1 flex justify-end items-center">
                         </div>
                     </div>
                 </div>
