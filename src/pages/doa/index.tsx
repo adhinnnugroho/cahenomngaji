@@ -1,9 +1,9 @@
 import SearchInput from "@/components/input/SearchInput"
 import MainLayouts from "@/components/layouts/mainLayouts"
+import { useState } from "react";
 
 const DoaPage = () => {
     const [animationSearchInput, setAnimationSearchInput] = useState(false);
-    const [searchParam, setSearchParam] = useState<string>('');
 
 
     const handleAnimationSearchInput = () => {
