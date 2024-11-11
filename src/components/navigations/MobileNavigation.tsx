@@ -16,6 +16,7 @@ const MobileNavigation = () => {
     };
 
     const ActiveHomeIcons = route.pathname.startsWith("/home") ? ActiveHome : HomeIcons;
+    const ActiveDoaIcons = route.pathname.startsWith("/doa") ? ActiveDoa : DoaIcons;
 
 
     return (
@@ -28,7 +29,7 @@ const MobileNavigation = () => {
                     <NavigationCard link="/sholat" icons={getActiveIcon("/sholat", ActiveSholat, SholatIcons)} />
                 </div>
                 <div className="col-span-1">
-                    <NavigationCard link="/doa" icons={getActiveIcon("/doa", ActiveDoa, DoaIcons)} />
+                    <NavigationCard link="/doa" icons={ActiveDoaIcons} />
                 </div>
             </div>
         </div>

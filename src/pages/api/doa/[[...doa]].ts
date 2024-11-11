@@ -1,5 +1,5 @@
 
-import { retrieveDataTypeDoa } from "@/core/hooks/doa/useDoaData";
+import { retrieveDataDoa } from "@/core/hooks/doa/useDoaData";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
@@ -13,12 +13,9 @@ export default async function handler(
 
 
     try {
-
-        const { typeDoa }: any = req.query;
-        const typeDoaId = typeDoa ? typeDoa[1] : null;
-
-        const response = await retrieveDataTypeDoa();
-
+        const { doa }: any = req.query;
+        const typeDoaId = doa ? doa[0] : null;
+        const response = await retrieveDataDoa(typeDoaId);
         res.status(200).json({
             status: true,
             statusCode: 200,

@@ -8,7 +8,17 @@ export async function retrieveDataTypeDoa() {
     return ResponseEndPointDoa;
 }
 
+export async function retrieveDataDoa(Sumber: String) {
+    const ResponseEndPointDoa = await instance.get(`${process.env.REST_API_URL_DOA}/${Sumber}`);
+    return ResponseEndPointDoa;
+}
+
 export async function retrieveAllTypeDoa() {
     const ResponseEndPointDoa = await DoaServices.getAllTypeDoa();
+    return ResponseEndPointDoa.data.data;
+}
+
+export async function retrieveAllDoa(Sumber: String) {
+    const ResponseEndPointDoa = await DoaServices.getAllDoa(Sumber);
     return ResponseEndPointDoa.data.data;
 }
