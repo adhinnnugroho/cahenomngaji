@@ -1,4 +1,3 @@
-import SearchInput from "@/components/input/SearchInput"
 import MainLayouts from "@/components/layouts/mainLayouts"
 import { retrieveAllDoa, retrieveAllTypeDoa } from "@/core/hooks/doa/useDoaData"
 import Image from "next/image"
