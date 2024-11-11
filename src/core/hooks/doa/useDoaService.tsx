@@ -1,7 +1,7 @@
 import instance from "@/core/libs/axios/instance";
 
 const DoaServices = {
-    getAllDoa: () => instance.get(`/api/doa`),
+    getAllTypeDoa: () => instance.get(`/api/typeDoa`),
 };
 
 export default DoaServices;

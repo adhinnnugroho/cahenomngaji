@@ -1,34 +1,45 @@
 import SearchInput from "@/components/input/SearchInput"
 import MainLayouts from "@/components/layouts/mainLayouts"
-import { useState } from "react";
+import { retrieveAllTypeDoa } from "@/core/hooks/doa/useDoaData"
+import { useCallback, useEffect, useState } from "react"
 
 const DoaPage = () => {
-    const [animationSearchInput, setAnimationSearchInput] = useState(false);
+
+    const [typeDoa, setTypeDoa] = useState([])
+    const [SearchParam, setSearchParam] = useState('');
+    const getAllTypeDoa = useCallback(async () => {
+        const getResponseTypeDoa = await retrieveAllTypeDoa();
+        setTypeDoa(getResponseTypeDoa);
+    }, []);
+
+    useEffect(() => {
+        getAllTypeDoa();
+    }, [getAllTypeDoa]);
 
 
-    const handleAnimationSearchInput = () => {
-        setAnimationSearchInput(!animationSearchInput);
-    }
+
     return (
         <MainLayouts NavigationType="none">
-            <div className="mt-5 ml-4 mr-4 mb-5">
-                <div className="grid grid-cols-3 gap-7">
-                    <div
-                        className="col-span-1 text-2xl text-purple-600 font-bold">
-                        Doa
-                    </div>
-                    <div className="col-span-2 text-3xl text-right mr-3 relative">
-                        {!animationSearchInput ? (
-                            <button onClick={handleAnimationSearchInput} >
-                                <i className="bx bx-search text-3xl bg-gray-500 rounded-full flex justify-center items-center h-11 w-11 p-2" />
-                            </button>
-                        ) : (
-                            <SearchInput handleAnimationSearchInput={handleAnimationSearchInput} />
-                        )}
-                    </div>
+            <div className="fixed w-full bg-black">
+                <div className="p-4">
+                    <SearchInput placeholder="Search Doa" />
                 </div>
             </div>
-        </MainLayouts>
+            <div className="p-4">
+
+                <div className="mt-28">
+                    {typeDoa.map((Doa: any, index: number) => {
+                        return (
+                            <div key={"Doa" + index} className="border border-gray-900 mb-4 p-3 rounded-lg bg-gray-900 ">
+                                <h1>
+                                    {Doa}
+                                </h1>
+                            </div>
+                        )
+                    })}
+                </div>
+            </div>
+        </MainLayouts >
     )
 }
 

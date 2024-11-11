@@ -10,15 +10,8 @@ export default async function handler(
         return res.status(405).json({ message: "Method Not Allowed" });
     }
 
-
-
     try {
-
-        const { typeDoa }: any = req.query;
-        const typeDoaId = typeDoa ? typeDoa[1] : null;
-
         const response = await retrieveDataTypeDoa();
-
         res.status(200).json({
             status: true,
             statusCode: 200,
