@@ -1,16 +1,7 @@
 import SearchInput from "@/components/input/SearchInput"
 import MainLayouts from "@/components/layouts/mainLayouts"
-import { retrieveAllDoa, retrieveAllTypeDoa } from "@/core/hooks/doa/useDoaData"
-import Image from "next/image"
-import { useCallback, useEffect, useState } from "react"
-import { loadingSearchAnimations } from "@/assets/loading"
 import Link from "next/link"
 import { useRouter } from "next/router"
-
-interface DoaWithCount {
-    type: string;
-    count: number;
-}
 
 const DoaPage = () => {
 
