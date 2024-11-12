@@ -13,53 +13,28 @@ export async function retrieveDataDetailsSurah(SurahId: number) {
 
 const useSurahData = () => {
     const [surah, setSurah] = useState<any[]>([]);
-    const [loadedDataCount, setLoadedDataCount] = useState<number>(5);
-    const [totalDataCount, setTotalDataCount] = useState<number>(0);
     const [searchParam, setSearchParam] = useState<string>('');
     const [loading, setLoading] = useState(true);
 
 
     const getAllSurah = useCallback(async () => {
         const responseSurah = await retrieveDataSurah();
-        setTotalDataCount(responseSurah.length);
-        setSurah(responseSurah.slice(0, loadedDataCount));
+        setSurah(responseSurah);
         setLoading(false);
-    }, [loadedDataCount]);
+    }, []);
 
 
     useEffect(() => {
         getAllSurah();
     }, [getAllSurah]);
 
-    const loadMoreData = useCallback(() => {
-        setLoadedDataCount((prevCount) => prevCount + 5);
-    }, []);
-
-    const handleScroll = useCallback(() => {
-        const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-
-        if (scrollTop + clientHeight >= scrollHeight && loadedDataCount < totalDataCount) {
-            loadMoreData();
-        } else if (scrollTop === 0 && loadedDataCount > 5) {
-            setLoadedDataCount(5);
-        }
-        setLoading(false);
-    }, [loadedDataCount, totalDataCount, loadMoreData]);
-
-    useEffect(() => {
-        window.addEventListener('scroll', handleScroll);
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-            setLoading(false);
-        };
-    }, [handleScroll]);
 
     const debouncedSearch = useCallback(
         (searchValue: string) => {
             const timeout = setTimeout(async () => {
                 const responseSurah = await retrieveDataSurah();
                 if (searchValue === '') {
-                    setSurah(responseSurah.slice(0, loadedDataCount));
+                    setSurah(responseSurah);
                     setLoading(false);
                 } else {
                     setSurah(
@@ -69,11 +44,11 @@ const useSurahData = () => {
                     );
                     setLoading(false);
                 }
-            }, 300); // Adjust debounce delay as needed
+            }, 300);
 
             return () => clearTimeout(timeout);
         },
-        [loadedDataCount]
+        []
     );
 
     const handleSearch = (searchValue: string) => {
@@ -82,9 +57,7 @@ const useSurahData = () => {
         setLoading(false);
     };
 
-
-
-    return { surah, handleSearch, totalDataCount, loadedDataCount, debouncedSearch, searchParam, loading }
+    return { surah, handleSearch, debouncedSearch, searchParam, loading }
 
 }
 
