@@ -131,7 +131,6 @@ export const useScheduleData = () => {
             setCurrentPrayer(current);
             setNextPrayer(next);
             setTimeToNextPrayer(formatTimeRemaining(timeToNext));
-            setNextPrayer
         };
 
         const interval = setInterval(updatePrayerTime, 1000);
