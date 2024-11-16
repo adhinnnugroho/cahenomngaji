@@ -1,138 +1,85 @@
 import ScheduleCard from "@/components/card/Schedule/ScheduleCard";
 import MainLayouts from "@/components/layouts/mainLayouts"
-import { getCoordinatesUser } from "@/core/hooks/locations/useLocationService";
-import { retrieveScheduleSholatDaily, retrieveSpecificCityData, retrieveUserLocations } from "@/core/hooks/sholat/useSholatData";
-import { useDateData } from "@/core/hooks/useDateData";
-import { useEffect, useState } from "react";
+import { jadwalSholatBg } from "@/assets/images/ImageManagement";
+import Image from "next/image";
+import { useScheduleData } from "@/core/hooks/sholat/useScheduleData";
 
 const SholatPage = () => {
-    const { currentDateInfo, currentDate } = useDateData();
-    const [dailyPrayerSchedule, setDailyPrayerSchedule] = useState<any>(null);
-    const [City, setCity] = useState<any>(null);
-    const [daysInMonth, setDaysInMonth] = useState<{ date: Date; dayName: string; isToday: boolean }[]>([]);
-    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-    const [Today, setToday] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
+    const {
+        dailyPrayerSchedule,
+        formatDate,
+        handleDateChange,
+        useLocation,
+        loading,
+        tanggalStr,
+        nextPrayer,
+        timeToNextPrayer,
+    } = useScheduleData();
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                // Mendapatkan koordinat pengguna
-                const coordinates = await getCoordinatesUser() as [number, number];
-                const [latitude, longitude] = coordinates;
-
-                // Mendapatkan lokasi pengguna
-                const UserLocationsResponse = await retrieveUserLocations(latitude, longitude);
-
-                // Jika lokasi pengguna sudah didapatkan, ambil ID kota
-                if (UserLocationsResponse.city) {
-                    const cityDataResponse = await retrieveSpecificCityData(UserLocationsResponse.city.name);
-                    setCity(cityDataResponse);
-                    // Ambil jadwal sholat harian jika ID kota tersedia
-                    if (cityDataResponse.id) {
-                        const ScheduleSholatResponse = await retrieveScheduleSholatDaily(cityDataResponse.id, currentDateInfo.year, currentDateInfo.month, currentDateInfo.day);
-                        setDailyPrayerSchedule(ScheduleSholatResponse.jadwal);
-                        setLoading(false);
-                    }
-                }
-            } catch (error) {
-                console.error('Error retrieving data:', error);
-            }
-        };
-
-        fetchData();
-    }, [currentDateInfo.year, currentDateInfo.month, currentDateInfo.day]);
-
-    useEffect(() => {
-        const getDaysInMonth = () => {
-            const year = currentDate.getFullYear();
-            const month = currentDate.getMonth();
-            const today = new Date();
-            const days = [];
-
-            for (let day = 0; day <= 6; day++) {
-                const date = new Date(year, month, today.getDate() + day - today.getDay());
-                const dayName = getDayName(date.getDay());
-                const isToday = date.toDateString() === today.toDateString();
-                setToday(today.toDateString());
-                days.push({ date, dayName, isToday });
-            }
-
-            setDaysInMonth(days);
-        };
-
-        const getDayName = (dayIndex: number) => {
-            const daysOfWeek = ['Ming', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
-            return daysOfWeek[dayIndex];
-        };
-
-        getDaysInMonth();
-    }, [currentDate]);
-
-    const changeSchedule = async (date: Date) => {
-        setSelectedDate(date);
-        setToday(date.toDateString());
-        setDaysInMonth(prev => prev.map(day => ({ ...day, isToday: day.date.toDateString() === date.toDateString() })));
-        if (City.id) {
-            const ScheduleSholatResponse = await retrieveScheduleSholatDaily(City.id, date.getFullYear(), date.getMonth() + 1, date.getDate());
-            setDailyPrayerSchedule(ScheduleSholatResponse.jadwal);
-            setLoading(false);
-        }
-    };
+    const TimeToPrayer = nextPrayer.time
+        ? nextPrayer.time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })
+        : '';
 
     return (
         <MainLayouts NavigationType="none">
-            <div className="p-3 mt-5">
-                <div className="flex items-start gap-2">
-                    <i className='bx bxs-calendar text-3xl font-semibold'></i>
-                    <div className="">
-                        <h1 className="text-2xl  font-bold">
-                            Hari ini
+            <div className="relative z-10">
+                <Image src={jadwalSholatBg} alt="Last Read Background" className="w-full" />
+                <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center flex-col">
+                    <div className="flex flex-wrap gap-1 ml-3 mt-3 items-center absolute top-0 left-0">
+                        <i className="bx bx-location-plus text-3xl" />
+                        <h5 className="text-white font-semibold text-2xl">
+                            {useLocation}
+                        </h5>
+                    </div>
+                    <div className="text-center mt-24">
+                        <h1 className="text-4xl font-bold capitalize">
+                            {nextPrayer.name} {TimeToPrayer}
                         </h1>
-                        <h2>
-                            {loading ? "Loading..." : dailyPrayerSchedule?.tanggal}
-                        </h2>
+                        <p className="text-3xl font-semibold">
+                            - {timeToNextPrayer}
+                        </p>
                     </div>
                 </div>
+            </div>
 
-                <div className="overflow-x-auto scrollbar-hidden mt-10">
-                    <div className="flex gap-2 text-center">
-                        {daysInMonth.map((day, index) => (
-                            <div className={`border border-gray-500 p-3  rounded-md cursor-pointer ${!selectedDate && Today === day.date.toDateString()
-                                ? 'bg-purple-600 border-purple-600' : 'border-gray-700'}  ${selectedDate && day.date.toDateString() === selectedDate.toDateString()
-                                    ? 'bg-purple-600 border-purple-600' : ''}`}
-                                key={index} onClick={() => changeSchedule(day.date)}>
-                                <p className='text-xl'>{day.dayName}</p>
-                                <p className='text-xl'>{day.date.getDate()}</p>
-                            </div>
-                        ))}
+
+            <div className="p-3 -mt-8 relative z-20">
+                <div className="bg-white p-2 text-black rounded-lg">
+                    <div className="flex flex-wrap gap-3 w-full items-center justify-center">
+                        <i className="bx bx-chevron-left text-3xl font-bold" onClick={() => handleDateChange(-1)} />
+                        <h1 className="text-3xl  font-bold text-center">
+                            {loading ? "Loading..." : formatDate(tanggalStr)}
+                        </h1>
+                        <i className="bx bx-chevron-right text-3xl font-bold" onClick={() => handleDateChange(1)} />
                     </div>
                 </div>
+            </div>
 
+            <div className="p-4 -mt-10">
                 <div className="grid grid-cols-1 gap-5  mt-10 mb-20">
                     <div className={`p-2 rounded-lg bg-gray-900`}>
-                        <ScheduleCard title="Imsyak" Jadwal={loading ? "Loading..." : (dailyPrayerSchedule && dailyPrayerSchedule.imsak)} />
+                        <ScheduleCard title="Imsyak" Jadwal={loading ? "Loading..." : (dailyPrayerSchedule?.imsak)} />
                     </div>
                     <div className={`p-2 rounded-lg bg-gray-900`}>
-                        <ScheduleCard title="Sholat Subuh" Jadwal={loading ? "Loading..." : (dailyPrayerSchedule && dailyPrayerSchedule.subuh)} />
+                        <ScheduleCard title="Sholat Subuh" Jadwal={loading ? "Loading..." : (dailyPrayerSchedule?.subuh)} />
                     </div>
                     <div className={`p-2 rounded-lg bg-gray-900`}>
-                        <ScheduleCard title="Sholat Dhuha" Jadwal={loading ? "Loading..." : (dailyPrayerSchedule && dailyPrayerSchedule.dhuha)} />
+                        <ScheduleCard title="Sholat Dhuha" Jadwal={loading ? "Loading..." : (dailyPrayerSchedule?.dhuha)} />
                     </div>
                     <div className={`p-2 rounded-lg bg-gray-900`}>
-                        <ScheduleCard title="Sholat Dzuhur" Jadwal={loading ? "Loading..." : (dailyPrayerSchedule && dailyPrayerSchedule.dzuhur)} />
+                        <ScheduleCard title="Sholat Dzuhur" Jadwal={loading ? "Loading..." : (dailyPrayerSchedule?.dzuhur)} />
                     </div>
                     <div className={`p-2 rounded-lg bg-gray-900`}>
-                        <ScheduleCard title="Sholat Ashar" Jadwal={loading ? "Loading..." : (dailyPrayerSchedule && dailyPrayerSchedule.ashar)} />
+                        <ScheduleCard title="Sholat Ashar" Jadwal={loading ? "Loading..." : (dailyPrayerSchedule?.ashar)} />
                     </div>
                     <div className={`p-2 rounded-lg bg-gray-900`}>
-                        <ScheduleCard title="Sholat Maghrib" Jadwal={loading ? "Loading..." : (dailyPrayerSchedule && dailyPrayerSchedule.maghrib)} />
+                        <ScheduleCard title="Sholat Maghrib" Jadwal={loading ? "Loading..." : (dailyPrayerSchedule?.maghrib)} />
                     </div>
                     <div className={`p-2 rounded-lg bg-gray-900`}>
-                        <ScheduleCard title="Sholat Isya" Jadwal={loading ? "Loading..." : (dailyPrayerSchedule && dailyPrayerSchedule.isya)} />
+                        <ScheduleCard title="Sholat Isya" Jadwal={loading ? "Loading..." : (dailyPrayerSchedule?.isya)} />
                     </div>
                 </div>
-            </div >
+            </div>
         </MainLayouts >
     )
 }
