@@ -56,6 +56,8 @@ export const useScheduleData = () => {
         const currentDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
         currentDate.setDate(currentDate.getDate() + direction);
         const newMonth = currentDate.getMonth() + 1;
+        const CurrentDate = currentDate.getDate() + "/" + newMonth + "/" + currentDate.getFullYear();
+        getDateInHijr(CurrentDate);
         changeSchedule(new Date(currentDate.getFullYear(), newMonth - 1, currentDate.getDate()));
         setLoading(true);
     };
@@ -115,7 +117,7 @@ export const useScheduleData = () => {
     }, [dailyPrayerSchedule]); // gunakan useCallback dan tambahkan dailyPrayerSchedule sebagai dependency
 
     const formatTimeRemaining = (ms: number) => {
-        if (ms < 0) return "00:00:00";
+        if (ms <= 0) return "Waktu sholat telah tiba!";
         const hours = Math.floor(ms / (1000 * 60 * 60));
         const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((ms % (1000 * 60)) / 1000);
@@ -125,16 +127,33 @@ export const useScheduleData = () => {
     useEffect(() => {
         const updatePrayerTime = () => {
             const { current, next, timeToNext } = getCurrentPrayer();
-            setCurrentPrayer(current);
-            setNextPrayer(next);
-            setTimeToNextPrayer(formatTimeRemaining(timeToNext));
+
+            // Jika waktunya sudah habis, tampilkan pesan "Waktu sholat telah tiba!" selama 1 menit
+            if (timeToNext <= 0) {
+                setCurrentPrayer(current);
+                setNextPrayer(next);
+                setTimeToNextPrayer("Waktu sholat telah tiba!");
+
+                // Setelah 1 menit, ambil ulang waktu sholat berikutnya
+                setTimeout(() => {
+                    const { current: updatedCurrent, next: updatedNext, timeToNext: updatedTimeToNext } = getCurrentPrayer();
+                    setCurrentPrayer(updatedCurrent);
+                    setNextPrayer(updatedNext);
+                    setTimeToNextPrayer(formatTimeRemaining(updatedTimeToNext));
+                }, 60000); // 60000 ms = 1 menit
+            } else {
+                setCurrentPrayer(current);
+                setNextPrayer(next);
+                setTimeToNextPrayer(formatTimeRemaining(timeToNext));
+            }
         };
 
         const interval = setInterval(updatePrayerTime, 1000);
         updatePrayerTime();
 
         return () => clearInterval(interval);
-    }, [getCurrentPrayer]); // tambahkan getCurrentPrayer sebagai dependency
+    }, [getCurrentPrayer]);
+
 
 
     const getDateInHijr = useCallback(async (tanggalStr: string) => {

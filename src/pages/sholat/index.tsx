@@ -39,7 +39,9 @@ const SholatPage = () => {
                             {TimeToPrayer}
                         </h1>
                         <p className="text-xl font-semibold">
-                            {nextPrayer.name} kurang dari {loading ? "" : '-' + timeToNextPrayer}
+                            {loading ? "" : timeToNextPrayer === "Waktu sholat telah tiba!"
+                                ? timeToNextPrayer
+                                : `-${timeToNextPrayer} menuju Sholat ${nextPrayer.name}`}
                         </p>
                     </div>
                 </div>
