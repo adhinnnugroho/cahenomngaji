@@ -9,18 +9,7 @@ import SearchInput from "@/components/input/SearchInput";
 import { FixedSizeList as List } from 'react-window';
 
 const HomePage = () => {
-    const [animationSearchInput, setAnimationSearchInput] = useState(false);
-    const [searchParam, setSearchParam] = useState<string>('');
-    const { surah, handleSearch, debouncedSearch, loading } = useSurahData();
-
-    const handleAnimationSearchInput = () => {
-        setAnimationSearchInput(!animationSearchInput);
-        if (animationSearchInput) {
-            setSearchParam('');
-            debouncedSearch(searchParam);
-        }
-    }
-
+    const { surah, handleSearch, loading, searchParam } = useSurahData();
     const filteredSurahs = useMemo(() => {
         return surah.filter((surahItem: any) =>
             surahItem.namaLatin.toLowerCase().includes(searchParam.toLowerCase())
@@ -44,7 +33,20 @@ const HomePage = () => {
 
     return (
         <MainLayouts>
-            <div className="p-3">
+            <div className="p-4">
+                <div className="mb-10">
+                    <h2 className="capitalize text-xl mb-1 text-gray-400">
+                        assalamualaikum,
+                    </h2>
+                    <h1 className="text-3xl font-bold">
+                        Akhi/ukhti
+                    </h1>
+                </div>
+
+                <div className="mb-5">
+                    <SearchInput onChange={(e) => handleSearch(e.target.value)} />
+                </div>
+
                 <div className="relative">
                     <Image src={LastReadBackground} alt="Last Read Background" className="w-full" />
                     <div className="absolute top-0 left-0 flex flex-wrap gap-1 ml-3 mt-3 items-center">
@@ -57,17 +59,6 @@ const HomePage = () => {
                     <div className="grid grid-cols-3 gap-2">
                         <div className="col-span-1 flex items-center justify-start">
                             <h1 className="text-3xl text-purple-600 font-bold">Surah</h1>
-                        </div>
-                        <div className="col-span-2">
-                            <div className="flex justify-end items-center">
-                                {!animationSearchInput ? (
-                                    <button onClick={handleAnimationSearchInput}>
-                                        <i className="bx bx-search text-3xl bg-gray-500 rounded-full flex justify-center items-center h-11 w-11 p-2" />
-                                    </button>
-                                ) : (
-                                    <SearchInput handleAnimationSearchInput={handleAnimationSearchInput} onChange={(e) => handleSearch(e.target.value)} />
-                                )}
-                            </div>
                         </div>
                     </div>
 

@@ -3,8 +3,6 @@ import MainLayouts from "@/components/layouts/mainLayouts"
 import { jadwalSholatBg } from "@/assets/images/ImageManagement";
 import Image from "next/image";
 import { useScheduleData } from "@/core/hooks/sholat/useScheduleData";
-import { useCallback, useEffect, useState } from "react";
-import DateHijrService from "@/core/hooks/date/useDateHijrService";
 
 const SholatPage = () => {
     const {
