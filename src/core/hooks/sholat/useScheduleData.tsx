@@ -7,7 +7,8 @@ export const useScheduleData = () => {
     const { currentDateInfo, formatDate } = useDateData();
     const [dailyPrayerSchedule, setDailyPrayerSchedule] = useState<any>(null);
     const [City, setCity] = useState<any>(null);
-    const [useLocation, setUseLocation] = useState<any>(null);
+    const [userCityLocations, setUserCityLocations] = useState([]);
+    const [userProvinceLocations, setUserProvinceLocations] = useState([]);
     const [loading, setLoading] = useState(true);
     const [currentPrayer, setCurrentPrayer] = useState('');
     const [nextPrayer, setNextPrayer] = useState<{ name: string, time: Date | null }>({ name: '', time: null });
@@ -20,7 +21,8 @@ export const useScheduleData = () => {
                 const [latitude, longitude] = coordinates;
                 const UserLocationsResponse = await retrieveUserLocations(latitude, longitude);
                 if (UserLocationsResponse.city) {
-                    setUseLocation(UserLocationsResponse.city.name);
+                    setUserCityLocations(UserLocationsResponse.city.name);
+                    setUserProvinceLocations(UserLocationsResponse.province.name);
                     const cityDataResponse = await retrieveSpecificCityData(UserLocationsResponse.city.name);
                     setCity(cityDataResponse);
                     if (cityDataResponse.id) {
@@ -136,7 +138,8 @@ export const useScheduleData = () => {
         dailyPrayerSchedule,
         formatDate,
         handleDateChange,
-        useLocation,
+        userCityLocations,
+        userProvinceLocations,
         loading,
         tanggalStr,
         currentPrayer,

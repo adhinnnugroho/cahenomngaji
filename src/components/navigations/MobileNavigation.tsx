@@ -11,12 +11,9 @@ import NavigationCard from "./card/NavigationCard"
 
 const MobileNavigation = () => {
     const route = useRouter()
-    const getActiveIcon = (activePath: any, activeIcon: any, inactiveIcon: any) => {
-        return route.pathname === activePath ? activeIcon : inactiveIcon;
-    };
-
     const ActiveHomeIcons = route.pathname.startsWith("/home") ? ActiveHome : HomeIcons;
     const ActiveDoaIcons = route.pathname.startsWith("/doa") ? ActiveDoa : DoaIcons;
+    const ActiveSholatIcons = route.pathname.startsWith("/sholat") ? ActiveSholat : SholatIcons;
 
 
     return (
@@ -26,7 +23,7 @@ const MobileNavigation = () => {
                     <NavigationCard link="/home" icons={ActiveHomeIcons} />
                 </div>
                 <div className="col-span-1">
-                    <NavigationCard link="/sholat" icons={getActiveIcon("/sholat", ActiveSholat, SholatIcons)} />
+                    <NavigationCard link="/sholat" icons={ActiveSholatIcons} />
                 </div>
                 <div className="col-span-1">
                     <NavigationCard link="/doa" icons={ActiveDoaIcons} />
