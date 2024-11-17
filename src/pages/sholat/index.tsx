@@ -17,16 +17,9 @@ const SholatPage = () => {
         tanggalStr,
         nextPrayer,
         timeToNextPrayer,
+        dateInHijr
     } = useScheduleData();
-    const [dateInHijr, setDateInHijr] = useState('');
-    const getDateInHijr = useCallback(async () => {
-        const responseHijr = await DateHijrService.getDateInHijr(tanggalStr);
-        setDateInHijr(responseHijr.data.data);
-    }, []);
 
-    useEffect(() => {
-        getDateInHijr();
-    }, [getDateInHijr]);
     const TimeToPrayer = nextPrayer.time
         ? nextPrayer.time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         : '';

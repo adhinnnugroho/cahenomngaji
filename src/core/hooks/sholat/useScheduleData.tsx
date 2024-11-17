@@ -2,6 +2,7 @@ import { getCoordinatesUser } from "@/core/hooks/locations/useLocationService";
 import { retrieveScheduleSholatDaily, retrieveSpecificCityData, retrieveUserLocations } from "@/core/hooks/sholat/useSholatData";
 import { useDateData } from "@/core/hooks/useDateData";
 import { useEffect, useState, useCallback } from "react";
+import DateHijrService from "../date/useDateHijrService";
 
 export const useScheduleData = () => {
     const { currentDateInfo, formatDate } = useDateData();
@@ -13,6 +14,7 @@ export const useScheduleData = () => {
     const [currentPrayer, setCurrentPrayer] = useState('');
     const [nextPrayer, setNextPrayer] = useState<{ name: string, time: Date | null }>({ name: '', time: null });
     const [timeToNextPrayer, setTimeToNextPrayer] = useState('');
+    const [dateInHijr, setDateInHijr] = useState('');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -134,6 +136,20 @@ export const useScheduleData = () => {
         return () => clearInterval(interval);
     }, [getCurrentPrayer]); // tambahkan getCurrentPrayer sebagai dependency
 
+
+    const getDateInHijr = useCallback(async (tanggalStr: string) => {
+        const responseHijr = await DateHijrService.getDateInHijr(tanggalStr);
+        setDateInHijr(responseHijr.data.data);
+    }, []);
+
+    const newDateFormatet = (typeof tanggalStr !== 'undefined' && tanggalStr !== null)
+        ? tanggalStr
+        : new Date().getDate() + '/' + (new Date().getMonth() + 1) + '/' + new Date().getFullYear();
+
+    useEffect(() => {
+        getDateInHijr(newDateFormatet);
+    }, [getDateInHijr]);
+
     return {
         dailyPrayerSchedule,
         formatDate,
@@ -145,5 +161,6 @@ export const useScheduleData = () => {
         currentPrayer,
         nextPrayer,
         timeToNextPrayer,
+        dateInHijr
     };
 };
