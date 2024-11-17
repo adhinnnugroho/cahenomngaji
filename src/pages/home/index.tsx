@@ -43,11 +43,9 @@ const HomePage = () => {
                     </h1>
                 </div>
 
-                <div className="mb-5">
-                    <SearchInput onChange={(e) => handleSearch(e.target.value)} />
-                </div>
 
-                <div className="relative">
+
+                <div className="relative mb-10">
                     <Image src={LastReadBackground} alt="Last Read Background" className="w-full" />
                     <div className="absolute top-0 left-0 flex flex-wrap gap-1 ml-3 mt-3 items-center">
                         <i className="bx bx-book-open text-3xl" />
@@ -55,11 +53,9 @@ const HomePage = () => {
                     </div>
                 </div>
 
-                <div className="mt-10">
-                    <div className="grid grid-cols-3 gap-2">
-                        <div className="col-span-1 flex items-center justify-start">
-                            <h1 className="text-3xl text-purple-600 font-bold">Surah</h1>
-                        </div>
+                <div className="mt-5">
+                    <div className="mb-5">
+                        <SearchInput onChange={(e) => handleSearch(e.target.value)} />
                     </div>
 
                     <div className="mb-20 mt-5 p-2">
