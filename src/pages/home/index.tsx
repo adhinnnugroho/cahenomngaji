@@ -6,7 +6,6 @@ import { useMemo, useState } from "react";
 import useSurahData from "@/core/hooks/surah/useSurahData";
 import SurahCard from "@/components/card/SurahCard";
 import SearchInput from "@/components/input/SearchInput";
-import { FixedSizeList as List } from 'react-window';
 import { jadwalSholatBg } from "@/assets/images/ImageManagement";
 
 

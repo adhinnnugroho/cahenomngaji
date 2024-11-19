@@ -14,3 +14,13 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Untuk Webkit browsers (Chrome, Safari) */
+.overflow-y-auto::-webkit-scrollbar {
+  display: none;
+}
+
+/* Untuk Firefox */
+.overflow-y-auto {
+  scrollbar-width: none;
+}
