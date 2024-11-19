@@ -5,7 +5,6 @@ import { useCallback, useEffect, useState } from "react"
 import { loadingSearchAnimations } from "@/assets/loading"
 import { jadwalSholatBg } from "@/assets/images/ImageManagement";
 import SearchInput from "@/components/input/SearchInput"
-import { link } from "fs"
 import Link from "next/link"
 
 const DoaPage = () => {
@@ -88,11 +87,13 @@ const DoaPage = () => {
                 <div className="grid grid-cols-1 gap-3 mt-7 mb-20">
                     {getDoaByType?.map((DoaByType, index) => (
                         <div className="col-span-1" key={'doa-' + index}>
-                            <div className="flex capitalize text-left bg-gray-600 p-3 gap-2 rounded-lg">
-                                <p>
-                                    {DoaByType.judul}
-                                </p>
-                            </div>
+                            <Link href={"doa/only/" + (index + 1)}>
+                                <div className="flex capitalize text-left bg-gray-600 p-3 gap-2 rounded-lg">
+                                    <p>
+                                        {DoaByType.judul}
+                                    </p>
+                                </div>
+                            </Link>
                         </div>
                     ))}
                 </div>

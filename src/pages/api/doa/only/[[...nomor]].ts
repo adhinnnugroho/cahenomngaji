@@ -1,5 +1,5 @@
 
-import { retrieveDataDoa } from "@/core/hooks/doa/useDoaData";
+import { retrieveDataDoa, retrieveDataOnlyDoa } from "@/core/hooks/doa/useDoaData";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
@@ -13,11 +13,13 @@ export default async function handler(
 
     try {
         const { nomor }: any = req.query;
+        const typeDoaId = nomor ? nomor[0] : null;
+        const response = await retrieveDataOnlyDoa(typeDoaId);
         res.status(200).json({
             status: true,
             statusCode: 200,
             message: "retrieved data doa successfully",
-            data: nomor
+            data: response.data.data
         });
     } catch (error) {
         res.status(500).json({ message: "Internal Server Error" + error });

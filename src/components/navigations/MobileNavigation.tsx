@@ -17,7 +17,7 @@ const MobileNavigation = () => {
 
 
     return (
-        <div className="fixed bottom-0 border border-transparent border-t-gray-200 w-full p-2 bg-black">
+        <div className="fixed bottom-0 border border-transparent border-t-gray-200 w-full p-2 z-50 bg-black">
             <div className="grid grid-cols-3 gap-5">
                 <div className="col-span-1">
                     <NavigationCard link="/home" icons={ActiveHomeIcons} />
