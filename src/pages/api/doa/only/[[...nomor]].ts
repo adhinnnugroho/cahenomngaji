@@ -1,5 +1,5 @@
 
-import { retrieveDataDoa, retrieveDataOnlyDoa } from "@/core/hooks/doa/useDoaData";
+import { retrieveDataOnlyDoa } from "@/core/hooks/doa/useDoaData";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(

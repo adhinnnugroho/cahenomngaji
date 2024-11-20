@@ -1,6 +1,5 @@
 
 import { retrieveDateHijr } from "@/core/hooks/date/useDateHijr";
-import { retrieveDataDoa } from "@/core/hooks/doa/useDoaData";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(

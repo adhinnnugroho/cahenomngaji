@@ -2,7 +2,7 @@ import MainLayouts from "@/components/layouts/mainLayouts"
 import { LastReadBackground } from "@/assets/images/ImageManagement"
 import { loadingSearchAnimations } from "@/assets/loading"
 import Image from "next/image"
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import useSurahData from "@/core/hooks/surah/useSurahData";
 import SurahCard from "@/components/card/SurahCard";
 import SearchInput from "@/components/input/SearchInput";
@@ -16,21 +16,6 @@ const HomePage = () => {
             surahItem.namaLatin.toLowerCase().includes(searchParam.toLowerCase())
         );
     }, [surah, searchParam]);
-
-    const Row = ({ index, style }: { index: number, style: React.CSSProperties }) => {
-        const surah = filteredSurahs[index];
-        return (
-            <div style={style} key={index}>
-                <SurahCard
-                    SurahNumber={surah.nomor}
-                    SurahNameLatin={surah.namaLatin}
-                    tempatTurun={surah.tempatTurun}
-                    link={`/home/surah/${surah.nomor}`}
-                    jumlahAyat={surah.jumlahAyat}
-                />
-            </div>
-        );
-    };
 
     return (
         <MainLayouts NavigationType="none">
