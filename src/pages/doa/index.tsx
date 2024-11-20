@@ -12,6 +12,7 @@ const DoaPage = () => {
     const [loading, setLoading] = useState(true)
     const [typeDoa, setTypeDoa] = useState('quran')
     const [getDoaByType, setGetDoaByType] = useState<any[]>([]);
+    const [indexDoa, setIndexDoa] = useState(0);
 
 
     const fetchAllDoaByType = useCallback(async (typeDoa: String) => {
@@ -31,10 +32,31 @@ const DoaPage = () => {
     }, [getTypeDoa, fetchAllDoaByType, typeDoa])
 
 
-    const HandleChangeTypeDoa = (typeDoa: string) => {
-        setTypeDoa(typeDoa)
-        fetchAllDoaByType(typeDoa)
-    }
+    const fetchTotalDataDoa = useCallback(async (typeDoa: string) => {
+        const response = await retrieveAllDoa(typeDoa);
+        return response.length;
+    }, []);
+
+    const HandleChangeTypeDoa = async (typeDoa: string) => {
+        setTypeDoa(typeDoa);
+
+        const doaTypes = ['quran', 'hadits', 'pilihan', 'harian', 'ibadah', 'haji', 'lainnya'];
+        const typeIndex = doaTypes.indexOf(typeDoa);
+        if (typeIndex === 0) {
+            setIndexDoa(0);
+        } else if (typeIndex > 0) {
+            const totalData = await Promise.all(
+                doaTypes.slice(0, typeIndex).map(fetchTotalDataDoa)
+            );
+
+            // Hitung total data
+            const totalSum = totalData.reduce((sum, current) => sum + current, 0);
+            setIndexDoa(totalSum);
+        }
+
+
+        fetchAllDoaByType(typeDoa);
+    };
 
     return (
         <MainLayouts NavigationType="none">
@@ -83,11 +105,10 @@ const DoaPage = () => {
                 </div>
 
 
-
                 <div className="grid grid-cols-1 gap-3 mt-7 mb-20">
                     {getDoaByType?.map((DoaByType, index) => (
                         <div className="col-span-1" key={'doa-' + index}>
-                            <Link href={"doa/only/" + (index + 1)}>
+                            <Link href={"doa-detail/" + (indexDoa + index + 1)}>
                                 <div className="flex capitalize text-left bg-gray-600 p-3 gap-2 rounded-lg">
                                     <p>
                                         {DoaByType.judul}

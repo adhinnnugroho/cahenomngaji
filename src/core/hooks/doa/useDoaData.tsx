@@ -13,7 +13,7 @@ export async function retrieveDataDoa(Sumber: String) {
     return ResponseEndPointDoa;
 }
 
-export async function retrieveDataOnlyDoa(Number: Number) {
+export async function retrieveDataOnlyDoa(Number: String) {
     const ResponseEndPointDoa = await instance.get(`${process.env.REST_API_URL_ONLY_DOA}/${Number}`);
     return ResponseEndPointDoa;
 }
@@ -29,7 +29,7 @@ export async function retrieveAllDoa(Sumber: String) {
 }
 
 
-export async function retrieveOnlyDoa(Number: Number) {
+export async function retrieveOnlyDoa(Number: String) {
     const ResponseEndPointDoa = await DoaServices.getOnlyDoa(Number);
     return ResponseEndPointDoa.data.data;
 }
