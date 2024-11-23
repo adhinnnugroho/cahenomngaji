@@ -50,7 +50,7 @@ const HomePage = () => {
             </div>
 
             <div className="bg-gray-900  p-3 -mt-3 h-full">
-                <div className="mt-5">
+                <div className="mt-5 mb-20">
                     {loading ? (
                         <Image src={loadingSearchAnimations} width={330} height={60} alt="loading" className="mx-auto" />
                     ) : (
