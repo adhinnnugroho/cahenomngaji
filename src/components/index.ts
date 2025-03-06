@@ -1,13 +1,16 @@
-import { LoadingAnimation } from "./animations/loading/LoadingAnimation";
-import { DoaCategoryButton } from "./buttons/DoaCategoryButton";
-import { SimpleDoaCard } from "./card/Doa/SimpleDoaCard";
-import MosqueHeader from "./header/MosqueHeader";
-import SearchInput from "./input/SearchInput";
-
-export const ComponentManagement = {
-    SimpleDoaCard,
-    DoaCategoryButton,
-    LoadingAnimation,
-    MosqueHeader,
-    SearchInput
-}
+export { default as SimpleButton } from "./buttons/SimpleButton";
+export { default as SurahCard } from "./card/SurahCard";
+export { default as SurahDetailsCard } from "./card/SurahDetailsCard";
+export { default as ScheduleCard } from "./card/Schedule/ScheduleCard";
+export { default as NavigationCard } from "./navigations/card/NavigationCard";
+export { default as Navigation } from "./navigations/Navigation";
+export { default as BackNavigations } from "./navigations/BackNavigations";
+export { default as MobileNavigation } from "./navigations/MobileNavigation";
+export { default as LoadingAnimation } from "./animations/loading/LoadingAnimation";
+export { default as DoaCategoryButton } from "./buttons/DoaCategoryButton";
+export { default as SearchInput } from "./input/SearchInput";
+export { default as MosqueHeader } from "./header/MosqueHeader";
+export { default as SimpleDoaCard } from "./card/Doa/SimpleDoaCard";
+export { default as loadingSearchAnimations } from '@/assets/loading/loadingSearchAnimations.svg';
+export { default as MainLayouts } from "./layouts/mainLayouts";
+export { default as SurahDetailHeader } from "./header/surah/SurahDetailHeader";

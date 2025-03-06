@@ -1,7 +1,8 @@
-import { loadingSearchAnimations } from "@/assets/loading"
+import { loadingSearchAnimations } from "@/components/index";
+
 import Image from "next/image";
 
-export const LoadingAnimation = ({ isLoading, children }: any) => {
+const LoadingAnimation = ({ isLoading, children }: any) => {
     return (
         <>
             {isLoading ? (
@@ -19,3 +20,5 @@ export const LoadingAnimation = ({ isLoading, children }: any) => {
         </>
     );
 }
+
+export default LoadingAnimation

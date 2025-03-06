@@ -1,12 +1,8 @@
-import MainLayouts from "@/components/layouts/mainLayouts"
-import { LastReadBackground } from "@/assets/images/ImageManagement"
-import { loadingSearchAnimations } from "@/assets/loading"
+import { LastReadBackground, jadwalSholatBg } from "@/assets/index"
+import { SearchInput, SurahCard, loadingSearchAnimations, MainLayouts } from "@/components/index";
 import Image from "next/image"
 import { useMemo } from "react";
 import useSurahData from "@/core/hooks/surah/useSurahData";
-import SurahCard from "@/components/card/SurahCard";
-import SearchInput from "@/components/input/SearchInput";
-import { jadwalSholatBg } from "@/assets/images/ImageManagement";
 
 
 const HomePage = () => {

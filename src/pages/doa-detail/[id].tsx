@@ -1,6 +1,6 @@
-import MainLayouts from "@/components/layouts/mainLayouts";
+import { MainLayouts } from "@/components/index";
 import { useRouter } from "next/router";
-import { jadwalSholatBg } from "@/assets/images/ImageManagement";
+import { jadwalSholatBg } from "@/assets/index";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";

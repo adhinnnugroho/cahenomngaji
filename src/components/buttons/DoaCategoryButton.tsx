@@ -1,4 +1,4 @@
-export const DoaCategoryButton = ({ onClick, title, CategoryDoa }: any) => {
+const DoaCategoryButton = ({ onClick, title, CategoryDoa }: any) => {
     return (
         <>
             <button className={`py-2 px-3 rounded-lg ${CategoryDoa ? 'bg-purple-600 text-white' : 'bg-white text-black'}`} onClick={onClick}>
@@ -9,3 +9,5 @@ export const DoaCategoryButton = ({ onClick, title, CategoryDoa }: any) => {
         </>
     )
 }
+
+export default DoaCategoryButton
