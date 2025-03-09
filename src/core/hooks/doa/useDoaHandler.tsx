@@ -10,8 +10,8 @@ export const useDoaHandler = () => {
 
 
     const fetchDoaByCategory = useCallback(async (typeDoa: String) => {
-        const response = await retrieveAllDoa(typeDoa as string);
-        setDoaByCategory(response)
+        const { data } = await retrieveAllDoa(typeDoa as string);
+        setDoaByCategory(data)
     }, [])
 
     const fetchDoaCategory = useCallback(async () => {

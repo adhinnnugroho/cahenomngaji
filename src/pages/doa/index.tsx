@@ -16,7 +16,7 @@ const DoaPage = () => {
         <MainLayouts NavigationType="none">
             <MosqueHeader title="Prayers" subTitle="Collection" />
             <div className="relative -mt-14 z-20">
-                <div className="bg-gray-900 p-3 -bottom-5 rounded-t-2xl">
+                <div className="bg-black p-3 -bottom-5 rounded-t-2xl">
                     <SearchInput placeholder="Find a Prayer" />
                 </div>
             </div>

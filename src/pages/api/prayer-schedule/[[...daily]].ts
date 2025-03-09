@@ -1,4 +1,4 @@
-import { getDailyPrayerSchedule } from '@/core/modulesApi/prayer/externalApiCallPrayer'
+import { getDailyPrayerSchedule } from '@/core/modulesApi/prayerTimes/externalApiCallPrayer'
 import { app, createHonoHandler } from '@/core/modulesApi/honoAdapter';
 
 app.get('/api/prayer-schedule/daily/:cityId/:year/:month/:date', async (c) => {

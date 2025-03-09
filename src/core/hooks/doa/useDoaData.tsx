@@ -23,9 +23,9 @@ export async function retrieveAllTypeDoa() {
     return ResponseEndPointDoa.data.data;
 }
 
-export async function retrieveAllDoa(Sumber: String) {
-    const ResponseEndPointDoa = await DoaServices.getAllDoa(Sumber);
-    return ResponseEndPointDoa.data.data;
+export async function retrieveAllDoa(sumber: String) {
+    const { data } = await DoaServices.getAllDoa(sumber);
+    return data.data;
 }
 
 
