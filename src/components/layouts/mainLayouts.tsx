@@ -4,7 +4,7 @@ import BackNavigations from "../navigations/BackNavigations";
 import Image from "next/image";
 
 const MainLayouts = ({ children, NavigationType, linkNavigation, NavbarTitle }: any) => {
-    return <div className="lg:max-w-full md:max-w-full sm:max-w-full">
+    return <div className="lg:max-w-full md:max-w-full sm:max-w-full bg-black text-white">
         {NavigationType !== "none" && (
             NavigationType === "Back"
                 ? <BackNavigations SurahName={NavbarTitle} link={linkNavigation} />
@@ -35,7 +35,7 @@ const MainLayouts = ({ children, NavigationType, linkNavigation, NavbarTitle }: 
                 </div>
             </div>
         </div>
-        <div className="lg:hidden block">
+        <div className="lg:hidden block bg-black">
             {children}
             <MobileNavigation />
         </div>

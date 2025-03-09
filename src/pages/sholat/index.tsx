@@ -45,8 +45,7 @@ const SholatPage = () => {
                 </div>
             </div>
 
-
-            <div className="p-3 -mt-8 relative z-20">
+{/* <div className="p-3 -mt-8 relative z-20">
                 <div className="bg-white p-2 text-black rounded-lg">
                     <div className="flex justify-between items-center w-full">
                         <div className="flex">
@@ -73,8 +72,7 @@ const SholatPage = () => {
                         </div>
                     </div>
                 </div>
-
-            </div>
+ </div> */}
 
             <div className="p-4 -mt-10">
                 <div className="grid grid-cols-1 gap-5  mt-10 mb-20">

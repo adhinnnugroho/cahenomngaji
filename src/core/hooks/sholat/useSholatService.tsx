@@ -1,12 +1,8 @@
 import instance from "@/core/libs/axios/instance";
 
 const SholatServices = {
-    getUserLocations: (latitude: number, longitude: number) =>
-        instance.get(`/api/locations/Coordinats/locations/${latitude}/${longitude}`),
-
-    getCityId: (city: string) =>
-        instance.get(`/api/locations/City/city/${city}`),
-
+    getUserLocations: (latitude: number, longitude: number) => instance.get(`/api/geolocation/coordinates/${latitude}/${longitude}`),
+    getCityId: (city: string) => instance.get(`/api/geolocation/city/${city}`),
     getScheduleSholatMonthly: (cityId: number, year: number, month: number) =>
         instance.get(`/api/jadwal/Monthly/jadwal/${cityId}/${year}/${month}`),
 

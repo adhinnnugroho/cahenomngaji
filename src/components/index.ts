@@ -14,3 +14,4 @@ export { default as SimpleDoaCard } from "./card/Doa/SimpleDoaCard";
 export { default as loadingSearchAnimations } from '@/assets/loading/loadingSearchAnimations.svg';
 export { default as MainLayouts } from "./layouts/mainLayouts";
 export { default as SurahDetailHeader } from "./header/surah/SurahDetailHeader";
+export { default as PrayerScheduleBackground } from "./background/PrayerScheduleBackground"
