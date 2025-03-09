@@ -1,8 +1,9 @@
-import { getCoordinatesUser } from "@/core/hooks/locations/useLocationService";
+
 import { retrieveScheduleSholatDaily, retrieveSpecificCityData, retrieveUserLocations } from "@/core/hooks/sholat/useSholatData";
 import { useDateData } from "@/core/hooks/useDateData";
 import { useEffect, useState, useCallback } from "react";
 import DateHijrService from "../date/useDateHijrService";
+import { getRealTimeCoordinates } from "@/core/modulesApi/geolocations/GeolocationServices";
 
 export const useScheduleData = () => {
     const { currentDateInfo, formatDate } = useDateData();
@@ -19,7 +20,7 @@ export const useScheduleData = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const coordinates = await getCoordinatesUser() as [number, number];
+                const coordinates = await getRealTimeCoordinates() as [number, number];
                 const [latitude, longitude] = coordinates;
                 const UserLocationsResponse = await retrieveUserLocations(latitude, longitude);
                 if (UserLocationsResponse.city) {

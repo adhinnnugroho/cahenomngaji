@@ -1,21 +1,20 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { retrieveAllDoa, retrieveAllTypeDoa } from "./useDoaData";
+import { getDoa, getTypeDoa } from "@/core/modulesApi/doa/InternalApiCall";
 
-export const useDoaHandler = () => {
+export const useDoaFetcher = () => {
     const [DoaCategory, setDoaCategory] = useState([])
     const [loading, setLoading] = useState(true)
     const [CategoryDoa, setCategoryDoa] = useState('quran')
     const [DoaByCategory, setDoaByCategory] = useState<any[]>([]);
     const [StartIndex, setStartIndex] = useState(0);
 
-
     const fetchDoaByCategory = useCallback(async (typeDoa: String) => {
-        const { data } = await retrieveAllDoa(typeDoa as string);
+        const { data } = await getDoa(typeDoa as string);
         setDoaByCategory(data)
     }, [])
 
     const fetchDoaCategory = useCallback(async () => {
-        const response = await retrieveAllTypeDoa()
+        const response = await getTypeDoa()
         setDoaCategory(response)
         setLoading(false)
     }, [])
@@ -27,8 +26,8 @@ export const useDoaHandler = () => {
 
 
     const calculateTotalDoasByCategory = useCallback(async (typeDoa: string) => {
-        const response = await retrieveAllDoa(typeDoa);
-        return response.length;
+        const { data } = await getDoa(typeDoa);
+        return data.length;
     }, []);
 
     const HandleChangeTypeDoa = async (typeDoa: string) => {
@@ -46,9 +45,25 @@ export const useDoaHandler = () => {
             setStartIndex(totalSum);
         }
 
-
         fetchDoaByCategory(typeDoa);
     };
+
+    const handleSearch = (searchValue: string) => {
+        const timeout = setTimeout(async () => {
+            const { data } = await getDoa(CategoryDoa);
+            if (searchValue === '') {
+                setLoading(false);
+            } else {
+                setDoaByCategory(
+                    data.filter((doa: any) =>
+                        doa.judul.toLowerCase().includes(searchValue.toLowerCase())
+                    )
+                );
+                setLoading(false);
+            }
+        }, 300);
+        return () => clearTimeout(timeout);
+    }
 
     return {
         DoaCategory,
@@ -56,6 +71,7 @@ export const useDoaHandler = () => {
         CategoryDoa,
         DoaByCategory,
         StartIndex,
+        handleSearch,
         HandleChangeTypeDoa
     }
 }

@@ -4,26 +4,22 @@ import { jadwalSholatBg } from "@/assets/index";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-import { retrieveOnlyDoa } from "@/core/hooks/doa/useDoaData";
+import { getSpesificDoa } from "@/core/modulesApi/doa/InternalApiCall";
 
 const DoaDetailPage = () => {
     const router = useRouter();
     const { id } = router.query as { id: string };
-
-    const [onlyDoa, setOnlyDoa] = useState<any>(null);
-
-
-    const getOnlyDoa = useCallback(async () => {
+    const [spesificDoa, setspesificDoa] = useState<any>(null);
+    const getspesificDoa = useCallback(async () => {
         if (id !== undefined) {
-            const response = await retrieveOnlyDoa(id);
-            setOnlyDoa(response);
+            const response = await getSpesificDoa(id);
+            setspesificDoa(response);
         }
     }, [id])
 
     useEffect(() => {
-        getOnlyDoa();
-    }, [getOnlyDoa])
-
+        getspesificDoa();
+    }, [getspesificDoa])
     return (
         <MainLayouts NavigationType="none">
             <div className="relative z-10">
@@ -43,7 +39,7 @@ const DoaDetailPage = () => {
 
                     <div className="flex-grow flex items-center justify-center">
                         <h3 className="text-3xl font-bold text-center">
-                            {onlyDoa?.judul}
+                            {spesificDoa?.judul}
                         </h3>
                     </div>
                 </div>
@@ -53,10 +49,10 @@ const DoaDetailPage = () => {
                 <div className="bg-gray-900 p-3 -bottom-5 rounded-t-2xl">
                     <div className="p-4">
                         <h3 className="text-3xl  font-bold leading-[60px] ">
-                            {onlyDoa?.arab}
+                            {spesificDoa?.arab}
                         </h3>
                         <p className="text-gray-300 font-semibold text-lg mt-10">
-                            {onlyDoa?.indo}
+                            {spesificDoa?.indo}
                         </p>
                     </div>
                 </div>
