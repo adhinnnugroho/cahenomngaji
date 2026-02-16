@@ -9,15 +9,38 @@ export function useDateData() {
         year: currentDate.getFullYear()
     };
 
-    const formatDate = (date: string) => {
-        const [day, month, year] = date.split("/");
-        const formattedDate = new Intl.DateTimeFormat("id-ID", {
+    const formatDate = (date?: string | null) => {
+        if (!date) {
+            return "";
+        }
+
+        const normalizedDate = date.replace(/-/g, "/");
+        const parts = normalizedDate.split("/");
+
+        if (parts.length !== 3) {
+            return date;
+        }
+
+        const [dayString, monthString, yearString] = parts;
+        const day = parseInt(dayString, 10);
+        const month = parseInt(monthString, 10);
+        const year = parseInt(yearString, 10);
+
+        if (Number.isNaN(day) || Number.isNaN(month) || Number.isNaN(year)) {
+            return date;
+        }
+
+        const parsedDate = new Date(year, month - 1, day);
+
+        if (Number.isNaN(parsedDate.getTime())) {
+            return date;
+        }
+
+        return new Intl.DateTimeFormat("id-ID", {
             day: "numeric",
             month: "long",
             year: "numeric",
-        }).format(new Date(`${year}-${month}-${day}`));
-
-        return formattedDate;
+        }).format(parsedDate);
     };
 
 

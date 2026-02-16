@@ -23,7 +23,7 @@ export const useScheduleData = () => {
                 const coordinates = await getRealTimeCoordinates() as [number, number];
                 const [latitude, longitude] = coordinates;
                 const UserLocationsResponse = await retrieveUserLocations(latitude, longitude);
-                if (UserLocationsResponse.city) {
+                if (UserLocationsResponse && UserLocationsResponse.city) {
                     setUserCityLocations(UserLocationsResponse.city.name);
                     setUserProvinceLocations(UserLocationsResponse.province.name);
                     const cityDataResponse = await retrieveSpecificCityData(UserLocationsResponse.city.name);
@@ -33,9 +33,12 @@ export const useScheduleData = () => {
                         setDailyPrayerSchedule(ScheduleSholatResponse.jadwal);
                         setLoading(false);
                     }
+                } else {
+                    setLoading(false);
                 }
             } catch (error) {
                 console.error('Error retrieving data:', error);
+                setLoading(false);
             }
         };
 
@@ -158,8 +161,13 @@ export const useScheduleData = () => {
 
 
     const getDateInHijr = useCallback(async (tanggalStr: string) => {
-        const responseHijr = await DateHijrService.getDateInHijr(tanggalStr);
-        setDateInHijr(responseHijr.data.data);
+        try {
+            const responseHijr = await DateHijrService.getDateInHijr(tanggalStr);
+            setDateInHijr(responseHijr.data.data ?? "");
+        } catch (error) {
+            console.error("Error retrieving hijr date:", error);
+            setDateInHijr("");
+        }
     }, []);
 
     const newDateFormatet = (typeof tanggalStr !== 'undefined' && tanggalStr !== null)

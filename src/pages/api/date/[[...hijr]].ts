@@ -15,6 +15,7 @@ export default async function handler(
         const hijrDate = hijr ? hijr[2] + '-' + hijr[1] + '-' + hijr[0] : null;
         const response = hijrDate !== null ? await retrieveDateHijr(hijrDate) : null;
         const hijriDate = response?.data.data.date[1] || null;
+
         res.status(200).json({
             status: true,
             statusCode: 200,
@@ -22,7 +23,14 @@ export default async function handler(
             data: hijriDate,
             reformattedDate: hijrDate
         });
-    } catch (error) {
-        res.status(500).json({ message: "Internal Server Error" + error });
+    } catch (error: any) {
+        const statusCode = error?.response?.status ?? 500;
+        const message = error?.response?.data?.message || "Failed to retrieve hijr date";
+
+        res.status(statusCode).json({
+            status: false,
+            statusCode,
+            message
+        });
     }
 }

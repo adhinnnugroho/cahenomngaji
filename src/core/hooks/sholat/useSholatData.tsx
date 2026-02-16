@@ -5,8 +5,14 @@ import SholatServices from "./useSholatService";
 export async function retrieveUserLocations(latitude: number, longitude: number) {
     try {
         const UserLocationResponse = await SholatServices.getUserLocations(latitude, longitude);
-        const getUserLocations = UserLocationResponse.data.locationData;
-        return getUserLocations;
+        const payload = UserLocationResponse.data;
+
+        if (!payload?.status || !payload.locationData) {
+            console.warn('No location data found for given coordinates');
+            return null;
+        }
+
+        return payload.locationData;
     } catch (error) {
         console.error('Error retrieving city data:', error);
         throw new Error('Failed to retrieve city data');
