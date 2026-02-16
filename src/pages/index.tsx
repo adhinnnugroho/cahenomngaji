@@ -1,26 +1,51 @@
-import SimpleButton from "@/components/buttons/SimpleButton";
+import Button from "@/components/atoms/Button";
 import Image from "next/image";
 import welcomeScreenBackground from "@/assets/images/welcomeScreenBackground.png";
+import Head from "next/head";
 
 export default function Home() {
   return (
-    <div className="flex items-center justify-center max-h-screen">
-      <div className="block text-center">
-        <h5 className="text-indigo-700 text-3xl font-bold mt-10">
-          CAHENOMNGAJI
-        </h5>
-        <p className="text-indigo-500 text-xl mt-2">
-          Learn Quran and Recite once everyday
-        </p>
+    <>
+      <Head>
+        <title>Cahenomngaji — Baca Al-Quran & Doa Harian</title>
+      </Head>
+      <div className="min-h-screen bg-surface-950 flex items-center justify-center px-6">
+        <div className="text-center max-w-sm mx-auto animate-fade-in-up">
+          {/* Brand */}
+          <h1 className="gradient-text text-4xl font-extrabold tracking-tight">
+            CAHENOMNGAJI
+          </h1>
+          <p className="text-surface-400 text-base mt-3 leading-relaxed">
+            Learn Quran and Recite once everyday
+          </p>
 
-        <div className="relative mt-5">
-          <Image src={welcomeScreenBackground} width={330} height={60} alt="ramadhan" className="mx-auto" />
-          <SimpleButton type="button" link={"/home"} rounded="rounded-full"
-            className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2  bg-yellow-700 text-white w-60 px-5 py-3">
+          {/* Hero image */}
+          <div className="relative mt-8 mb-12">
+            <div className="absolute -inset-4 bg-primary-500/10 rounded-3xl blur-2xl" />
+            <Image
+              src={welcomeScreenBackground}
+              width={320}
+              height={320}
+              alt="Welcome illustration"
+              className="mx-auto relative z-10 drop-shadow-2xl"
+              priority
+            />
+          </div>
+
+          {/* CTA */}
+          <Button
+            variant="primary"
+            href="/home"
+            className="w-full py-4 text-lg rounded-2xl shadow-xl shadow-primary-900/40"
+          >
             Get Started
-          </SimpleButton>
+          </Button>
+
+          <p className="text-xs text-surface-600 mt-6">
+            Bismillah, mulai perjalanan mengaji
+          </p>
         </div>
       </div>
-    </div>
+    </>
   );
 }

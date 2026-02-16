@@ -1,64 +1,81 @@
-import { MainLayouts } from "@/components/index";
+import { MainLayout, HeroHeader } from "@/components/index";
+import IconButton from "@/components/atoms/IconButton";
+import Head from "next/head";
 import { useRouter } from "next/router";
-import { jadwalSholatBg } from "@/assets/index";
-import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-import { getSpesificDoa } from "@/core/modulesApi/doa/InternalApiCall";
+import { doaApi } from "@/core/api/doa.api";
+import type { DoaDetail } from "@/core/api/types/doa.types";
+import Skeleton from "@/components/atoms/Skeleton";
 
 const DoaDetailPage = () => {
     const router = useRouter();
     const { id } = router.query as { id: string };
-    const [spesificDoa, setspesificDoa] = useState<any>(null);
-    const getspesificDoa = useCallback(async () => {
-        if (id !== undefined) {
-            const response = await getSpesificDoa(id);
-            setspesificDoa(response);
+    const [doa, setDoa] = useState<DoaDetail | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    const fetchDoa = useCallback(async () => {
+        if (!id) return;
+        try {
+            const { data } = await doaApi.getById(id);
+            setDoa(data.data);
+        } catch (error) {
+            console.error("Failed to fetch doa detail:", error);
+        } finally {
+            setLoading(false);
         }
-    }, [id])
+    }, [id]);
 
     useEffect(() => {
-        getspesificDoa();
-    }, [getspesificDoa])
+        fetchDoa();
+    }, [fetchDoa]);
+
     return (
-        <MainLayouts NavigationType="none">
-            <div className="relative z-10">
-                <Image src={jadwalSholatBg} alt="Last Read Background" className="w-full" />
-                <div className="absolute top-0 left-0 w-full h-full bg-black opacity-65"></div>
+        <>
+            <Head>
+                <title>{doa?.judul ?? "Doa"} — Cahenomngaji</title>
+            </Head>
+            <MainLayout showNavbar={false}>
+                <HeroHeader size="md">
+                    {/* Back button */}
+                    <Link href="/doa">
+                        <IconButton icon="bx bx-chevron-left" variant="glass" size="md" />
+                    </Link>
 
-                <div className="absolute top-0 left-0 w-full h-full p-5 flex flex-col">
-                    <div className="text-left">
-                        <div className="mb-5">
-                            <Link href={`/doa`}>
-                                <h2 className="capitalize text-xl mb-1 bg-gray-300 w-8 h-8 flex items-center justify-center rounded-full">
-                                    <i className="bx bx-chevron-left text-3xl font-semibold text-black"></i>
-                                </h2>
-                            </Link>
-                        </div>
-                    </div>
-
-                    <div className="flex-grow flex items-center justify-center">
-                        <h3 className="text-3xl font-bold text-center">
-                            {spesificDoa?.judul}
+                    {/* Title centered */}
+                    <div className="flex-1 flex items-center justify-center">
+                        <h3 className="text-2xl font-bold text-center px-4 leading-snug">
+                            {loading ? "" : doa?.judul}
                         </h3>
                     </div>
-                </div>
-            </div>
+                </HeroHeader>
 
-            <div className="relative -mt-14 z-20 ">
-                <div className="bg-gray-900 p-3 -bottom-5 rounded-t-2xl">
-                    <div className="p-4">
-                        <h3 className="text-3xl  font-bold leading-[60px] ">
-                            {spesificDoa?.arab}
-                        </h3>
-                        <p className="text-gray-300 font-semibold text-lg mt-10">
-                            {spesificDoa?.indo}
-                        </p>
+                {/* Content */}
+                <div className="relative -mt-6 z-20">
+                    <div className="glass-strong rounded-t-3xl p-6 min-h-[60vh]">
+                        {loading ? (
+                            <Skeleton lines={4} className="h-8" />
+                        ) : (
+                            <>
+                                {/* Arabic text */}
+                                <h3 className="font-arabic text-3xl font-bold leading-[2.4] text-right text-white">
+                                    {doa?.arab}
+                                </h3>
+
+                                {/* Divider */}
+                                <div className="w-12 h-0.5 bg-primary-500/30 my-8" />
+
+                                {/* Translation */}
+                                <p className="text-base text-surface-300 leading-relaxed font-medium">
+                                    {doa?.indo}
+                                </p>
+                            </>
+                        )}
                     </div>
                 </div>
-            </div>
-        </MainLayouts>
-    )
+            </MainLayout>
+        </>
+    );
 };
 
-export default DoaDetailPage
+export default DoaDetailPage;

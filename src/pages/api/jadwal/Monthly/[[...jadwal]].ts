@@ -1,5 +1,4 @@
-
-import { retrieveDataScheduleSholatMonthly } from "@/core/hooks/sholat/useSholatData";
+import httpClient from "@/core/api/http-client";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
@@ -11,20 +10,22 @@ export default async function handler(
     }
 
     try {
-        const { jadwal }: any = req.query;
-        const CityId = jadwal[1];
-        const Year = jadwal[2];
-        const Month = jadwal[3];
+        const { jadwal }: { jadwal?: string[] } = req.query;
+        const cityId = jadwal?.[1];
+        const year = jadwal?.[2];
+        const month = jadwal?.[3];
 
-        const GetScheduleSholat = await retrieveDataScheduleSholatMonthly(CityId, Year, Month);
+        const scheduleUrl = `${process.env.REST_API_URL_SCHEDULE}/sholat/jadwal/${cityId}/${year}/${month}`;
+        const { data } = await httpClient.get(scheduleUrl);
+
         res.status(200).json({
             status: true,
             statusCode: 200,
-            message: "retrieved data jadwal monthly successfully",
-            data: GetScheduleSholat.data.data
+            message: "Monthly prayer schedule retrieved successfully",
+            data: data.data,
         });
     } catch (error) {
-        console.error("Error while fetching data:", error);
+        console.error("Error fetching monthly prayer schedule:", error);
         res.status(500).json({ message: "Internal Server Error" });
     }
 }

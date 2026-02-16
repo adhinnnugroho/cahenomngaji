@@ -1,4 +1,4 @@
-import instance from '@/core/libs/axios/instance';
+import instance from '@/core/api/http-client';
 import { app, createHonoHandler } from '@/core/modulesApi/honoAdapter';
 
 app.get('/api/doa/:sumber', async (c) => {

@@ -1,115 +1,68 @@
-import { LastReadBackground, jadwalSholatBg } from "@/assets/index"
-import { SearchInput, SurahCard, loadingSearchAnimations, MainLayouts } from "@/components/index";
-import Image from "next/image"
-import { useMemo } from "react";
-import useSurahData from "@/core/hooks/surah/useSurahData";
-
+import { MainLayout, SearchBar, SurahCard, Skeleton, HeroHeader } from "@/components/index";
+import { LastReadBackground } from "@/assets/index";
+import Image from "next/image";
+import Head from "next/head";
+import useSurahList from "@/core/hooks/surah/useSurahList";
 
 const HomePage = () => {
-    const { surah, handleSearch, loading, searchParam } = useSurahData();
-    const filteredSurahs = useMemo(() => {
-        return surah.filter((surahItem: any) =>
-            surahItem.namaLatin.toLowerCase().includes(searchParam.toLowerCase())
-        );
-    }, [surah, searchParam]);
+    const { surahList, handleSearch, loading } = useSurahList();
 
     return (
-        <MainLayouts NavigationType="none">
-            <div className="relative z-10">
-                <Image src={jadwalSholatBg} alt="Last Read Background" className="w-full " />
-                <div className="absolute top-0 left-0 w-full h-full bg-black opacity-65"></div>
-                <div className="absolute top-0 left-0 w-full h-full p-5">
-                    <div className="text-left">
-                        <div className="mb-5">
-                            <h2 className="capitalize text-xl mb-1 text-gray-400">
-                                assalamualaikum,
-                            </h2>
-                            <h1 className="text-3xl font-bold">
-                                Akhi/Ukhti
-                            </h1>
-                        </div>
-                    </div>
-
-                    <div className="relative">
-                        <Image src={LastReadBackground} alt="Last Read Background" className="w-full" />
-                        <div className="absolute top-0 left-0 flex flex-wrap gap-1 ml-3 mt-3 items-center">
-                            <i className="bx bx-book-reader text-3xl" />
-                            <h5 className="text-white font-semibold text-2xl">Last Read</h5>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className="relative -mt-14 z-20">
-                <div className="bg-gray-900 p-3 -bottom-5 rounded-t-2xl">
-                    <SearchInput onChange={(e) => handleSearch(e.target.value)} />
-                </div>
-            </div>
-
-            <div className="bg-gray-900  p-3 -mt-3 h-full">
-                <div className="mt-5 mb-20">
-                    {loading ? (
-                        <Image src={loadingSearchAnimations} width={330} height={60} alt="loading" className="mx-auto" />
-                    ) : (
-                        filteredSurahs.map((surah: any, index: number) => (
-                            <div key={index}>
-                                <SurahCard
-                                    SurahNumber={surah.nomor}
-                                    SurahNameLatin={surah.namaLatin}
-                                    tempatTurun={surah.tempatTurun}
-                                    link={`/home/surah/${surah.nomor}`}
-                                    jumlahAyat={surah.jumlahAyat}
-                                />
+        <>
+            <Head>
+                <title>Quran — Cahenomngaji</title>
+            </Head>
+            <MainLayout>
+                {/* Hero */}
+                <HeroHeader title="Assalamualaikum" subtitle="Akhi/Ukhti" size="md">
+                    <div className="mt-auto">
+                        <div className="relative rounded-2xl overflow-hidden">
+                            <Image
+                                src={LastReadBackground}
+                                alt="Last Read"
+                                className="w-full object-cover rounded-2xl opacity-80"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-r from-primary-900/60 to-transparent" />
+                            <div className="absolute top-0 left-0 flex items-center gap-2 p-4">
+                                <i className="bx bx-book-reader text-2xl text-primary-300" />
+                                <span className="text-base font-semibold text-white">Last Read</span>
                             </div>
-                        ))
+                        </div>
+                    </div>
+                </HeroHeader>
+
+                {/* Search */}
+                <div className="relative -mt-6 z-20 px-4">
+                    <SearchBar
+                        placeholder="Cari surah..."
+                        onChange={(e) => handleSearch(e.target.value)}
+                    />
+                </div>
+
+                {/* Surah list */}
+                <div className="px-4 pt-6 pb-4">
+                    {loading ? (
+                        <div className="space-y-3">
+                            <Skeleton lines={8} />
+                        </div>
+                    ) : (
+                        <div className="stagger-children space-y-1">
+                            {surahList.map((surah) => (
+                                <SurahCard
+                                    key={surah.nomor}
+                                    surahNumber={surah.nomor}
+                                    surahNameLatin={surah.namaLatin}
+                                    tempatTurun={surah.tempatTurun}
+                                    jumlahAyat={surah.jumlahAyat}
+                                    link={`/home/surah/${surah.nomor}`}
+                                />
+                            ))}
+                        </div>
                     )}
                 </div>
-            </div>
-
-
-
-            {/* <div className="p-4">
-                <div className="mb-10">
-                    <h2 className="capitalize text-xl mb-1 text-gray-400">
-                        assalamualaikum,
-                    </h2>
-                    <h1 className="text-3xl font-bold">
-                        Akhi/ukhti
-                    </h1>
-                </div>
-
-
-
-                <div className="relative mb-10">
-                    <Image src={LastReadBackground} alt="Last Read Background" className="w-full" />
-                    <div className="absolute top-0 left-0 flex flex-wrap gap-1 ml-3 mt-3 items-center">
-                        <i className="bx bx-book-open text-3xl" />
-                        <h5 className="text-white font-semibold text-2xl">Last Read</h5>
-                    </div>
-                </div>
-
-                <div className="mt-5">
-                    <div className="mb-5">
-                        <SearchInput onChange={(e) => handleSearch(e.target.value)} />
-                    </div>
-
-                    <div className="mb-20 mt-5 p-2">
-                        {loading ? (
-                            <Image src={loadingSearchAnimations} width={330} height={60} alt="loading" className="mx-auto" />
-                        ) : (
-                            <List
-                                height={600}
-                                itemCount={filteredSurahs.length}
-                                itemSize={100}
-                                width="100%"
-                            >
-                                {Row}
-                            </List>
-                        )}
-                    </div>
-                </div>
-            </div> */}
-        </MainLayouts>
-    )
-}
+            </MainLayout>
+        </>
+    );
+};
 
 export default HomePage;

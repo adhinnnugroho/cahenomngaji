@@ -1,53 +1,69 @@
-import { useDoaFetcher } from "@/core/hooks/doa/useDoaFetcher"
-import { SearchInput, MainLayouts, MosqueHeader, DoaCategoryButton, LoadingAnimation, SimpleDoaCard } from "@/components/index";
-
+import { MainLayout, SearchBar, HeroHeader, DoaCard, Button, Skeleton } from "@/components/index";
+import Head from "next/head";
+import { useDoaFetcher } from "@/core/hooks/doa/useDoaFetcher";
 
 const DoaPage = () => {
     const {
-        DoaCategory,
+        doaCategories,
+        activeCategory,
+        doaList,
+        startIndex,
         loading,
-        CategoryDoa,
-        DoaByCategory,
         handleSearch,
-        StartIndex,
-        HandleChangeTypeDoa
+        handleChangeCategory,
     } = useDoaFetcher();
 
-    const renderDoaCategories = () =>
-        DoaCategory.map((item, index) => (
-            <DoaCategoryButton
-                key={`doa-category-${index}`}
-                title={item}
-                onClick={() => HandleChangeTypeDoa(item)}
-                CategoryDoa={CategoryDoa === item}
-            />
-        ));
-
     return (
-        <MainLayouts NavigationType="none">
-            <MosqueHeader title="Prayers" subTitle="Collection" />
-            <div className="relative -mt-14 z-20">
-                <div className="bg-black p-3 -bottom-5 rounded-t-2xl">
-                    <SearchInput placeholder="Find a Prayer" onChange={(e) => handleSearch(e.target.value)} />
-                </div>
-            </div>
-            <div className="p-4">
-                <div className="flex  gap-3 overflow-y-auto">
-                    <LoadingAnimation isLoading={loading}>
-                        {renderDoaCategories()}
-                    </LoadingAnimation>
+        <>
+            <Head>
+                <title>Doa — Cahenomngaji</title>
+            </Head>
+            <MainLayout>
+                <HeroHeader title="Kumpulan" subtitle="Doa & Dzikir" size="sm" />
+
+                {/* Search */}
+                <div className="relative -mt-6 z-20 px-4">
+                    <SearchBar
+                        placeholder="Cari doa..."
+                        onChange={(e) => handleSearch(e.target.value)}
+                    />
                 </div>
 
-                <div className="grid grid-cols-1 gap-3 mt-7 mb-20">
-                    {DoaByCategory?.map((DoaByType, index) => (
-                        <div className="col-span-1" key={'doa-' + index}>
-                            <SimpleDoaCard Doa={DoaByType.judul} index={index} StartIndex={StartIndex} />
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </MainLayouts>
-    )
-}
+                <div className="px-4 pt-4">
+                    {/* Category chips */}
+                    <div className="flex gap-2 overflow-x-auto scrollbar-hide py-2">
+                        {loading ? (
+                            <Skeleton className="h-10 w-full" />
+                        ) : (
+                            doaCategories.map((cat, idx) => (
+                                <Button
+                                    key={`cat-${idx}`}
+                                    variant="chip"
+                                    isActive={activeCategory === cat}
+                                    onClick={() => handleChangeCategory(cat)}
+                                    className="shrink-0"
+                                >
+                                    {cat}
+                                </Button>
+                            ))
+                        )}
+                    </div>
 
-export default DoaPage
+                    {/* Doa list */}
+                    <div className="space-y-2 mt-5 mb-20 stagger-children">
+                        {doaList?.map((doa, index) => (
+                            <DoaCard
+                                key={`doa-${index}`}
+                                title={doa.judul}
+                                index={index}
+                                startIndex={startIndex}
+                            />
+                        ))}
+                    </div>
+                </div>
+            </MainLayout>
+        </>
+    );
+};
+
+export default DoaPage;

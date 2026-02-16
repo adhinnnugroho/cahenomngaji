@@ -1,77 +1,83 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { getDoa, getTypeDoa } from "@/core/modulesApi/doa/InternalApiCall";
+import { useCallback, useEffect, useState } from "react";
+import { doaApi } from "@/core/api/doa.api";
+import type { DoaDetail, DoaCategory } from "@/core/api/types/doa.types";
 
 export const useDoaFetcher = () => {
-    const [DoaCategory, setDoaCategory] = useState([])
-    const [loading, setLoading] = useState(true)
-    const [CategoryDoa, setCategoryDoa] = useState('quran')
-    const [DoaByCategory, setDoaByCategory] = useState<any[]>([]);
-    const [StartIndex, setStartIndex] = useState(0);
+    const [doaCategories, setDoaCategories] = useState<DoaCategory[]>([]);
+    const [activeCategory, setActiveCategory] = useState("quran");
+    const [doaList, setDoaList] = useState<DoaDetail[]>([]);
+    const [startIndex, setStartIndex] = useState(0);
+    const [loading, setLoading] = useState(true);
 
-    const fetchDoaByCategory = useCallback(async (typeDoa: String) => {
-        const { data } = await getDoa(typeDoa as string);
-        setDoaByCategory(data)
-    }, [])
-
-    const fetchDoaCategory = useCallback(async () => {
-        const response = await getTypeDoa()
-        setDoaCategory(response)
-        setLoading(false)
-    }, [])
-
-    useEffect(() => {
-        fetchDoaCategory()
-        fetchDoaByCategory(CategoryDoa)
-    }, [fetchDoaCategory, fetchDoaByCategory, CategoryDoa])
-
-
-    const calculateTotalDoasByCategory = useCallback(async (typeDoa: string) => {
-        const { data } = await getDoa(typeDoa);
-        return data.length;
+    const fetchCategories = useCallback(async () => {
+        try {
+            const { data } = await doaApi.getTypes();
+            setDoaCategories(data.data ?? []);
+        } catch (error) {
+            console.error("Failed to fetch doa categories:", error);
+        } finally {
+            setLoading(false);
+        }
     }, []);
 
-    const HandleChangeTypeDoa = async (typeDoa: string) => {
-        setCategoryDoa(typeDoa);
+    const fetchDoaByCategory = useCallback(async (category: string) => {
+        try {
+            const { data } = await doaApi.getBySumber(category);
+            setDoaList(data.data ?? []);
+        } catch (error) {
+            console.error("Failed to fetch doa list:", error);
+        }
+    }, []);
 
-        const doaTypes = ['quran', 'hadits', 'pilihan', 'harian', 'ibadah', 'haji', 'lainnya'];
-        const typeIndex = doaTypes.indexOf(typeDoa);
-        if (typeIndex === 0) {
+    useEffect(() => {
+        fetchCategories();
+        fetchDoaByCategory(activeCategory);
+    }, [fetchCategories, fetchDoaByCategory, activeCategory]);
+
+    const handleChangeCategory = async (category: string) => {
+        setActiveCategory(category);
+
+        const doaTypes = ["quran", "hadits", "pilihan", "harian", "ibadah", "haji", "lainnya"];
+        const typeIndex = doaTypes.indexOf(category);
+
+        if (typeIndex <= 0) {
             setStartIndex(0);
-        } else if (typeIndex > 0) {
-            const totalData = await Promise.all(
-                doaTypes.slice(0, typeIndex).map(calculateTotalDoasByCategory)
-            );
-            const totalSum = totalData.reduce((sum, current) => sum + current, 0);
-            setStartIndex(totalSum);
+        } else {
+            try {
+                const totals = await Promise.all(
+                    doaTypes.slice(0, typeIndex).map(async (type) => {
+                        const { data } = await doaApi.getBySumber(type);
+                        return (data.data ?? []).length;
+                    })
+                );
+                setStartIndex(totals.reduce((sum, count) => sum + count, 0));
+            } catch {
+                setStartIndex(0);
+            }
         }
 
-        fetchDoaByCategory(typeDoa);
+        fetchDoaByCategory(category);
     };
 
     const handleSearch = (searchValue: string) => {
-        const timeout = setTimeout(async () => {
-            const { data } = await getDoa(CategoryDoa);
-            if (searchValue === '') {
-                setLoading(false);
-            } else {
-                setDoaByCategory(
-                    data.filter((doa: any) =>
-                        doa.judul.toLowerCase().includes(searchValue.toLowerCase())
-                    )
-                );
-                setLoading(false);
-            }
-        }, 300);
-        return () => clearTimeout(timeout);
-    }
+        if (!searchValue.trim()) {
+            fetchDoaByCategory(activeCategory);
+            return;
+        }
+        setDoaList((prev) =>
+            prev.filter((doa) =>
+                doa.judul?.toLowerCase().includes(searchValue.toLowerCase())
+            )
+        );
+    };
 
     return {
-        DoaCategory,
+        doaCategories,
+        activeCategory,
+        doaList,
+        startIndex,
         loading,
-        CategoryDoa,
-        DoaByCategory,
-        StartIndex,
         handleSearch,
-        HandleChangeTypeDoa
-    }
-}
+        handleChangeCategory,
+    };
+};

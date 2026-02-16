@@ -1,4 +1,4 @@
-import { getAllSurah, getDetailSurahById } from "@/core/hooks/surah/SurahApiService";
+import httpClient from "@/core/api/http-client";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
@@ -10,19 +10,22 @@ export default async function handler(
     }
 
     try {
-        const EndPointSurahApi = `${process.env.REST_API_URL}`;
-        const { surah }: any = req.query;
-        const SurahId = surah ? surah[1] : null;
-        const SurahResponse = SurahId ? await getDetailSurahById(EndPointSurahApi, SurahId) : await getAllSurah(EndPointSurahApi);
-        const SurahData = SurahResponse.data;
+        const endpointUrl = `${process.env.REST_API_URL}`;
+        const { surah }: { surah?: string[] } = req.query;
+        const surahId = surah?.[1] ?? null;
+
+        const response = surahId
+            ? await httpClient.get(`${endpointUrl}/${surahId}`)
+            : await httpClient.get(endpointUrl);
+
         res.status(200).json({
             status: true,
             statusCode: 200,
-            message: "Surah retrieved data successfully",
-            data: SurahData.data
+            message: "Surah data retrieved successfully",
+            data: response.data.data,
         });
     } catch (error) {
-        console.error("Error while fetching data:",);
-        res.status(500).json({ message: "Internal Server Error " + error });
+        console.error("Error fetching surah data:", error);
+        res.status(500).json({ message: "Internal Server Error" });
     }
 }
