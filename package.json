@@ -29,10 +29,5 @@
     "react-window": "^1.8.10",
     "tailwindcss": "^4.0.9",
     "typescript": "^5"
-  },
-  "pnpm": {
-    "overrides": {
-      "@eslint/plugin-kit": "^0.3.4"
-    }
   }
 }
