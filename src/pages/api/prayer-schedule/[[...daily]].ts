@@ -1,5 +1,7 @@
 import httpClient from "@/core/api/http-client";
-import { app, createHonoHandler } from "@/core/modulesApi/honoAdapter";
+import { createApp, createHonoHandler } from "@/core/modulesApi/honoAdapter";
+
+const app = createApp();
 
 app.get(
     "/api/prayer-schedule/daily/:cityId/:year/:month/:date",
@@ -26,4 +28,4 @@ app.get(
     }
 );
 
-export default createHonoHandler();
+export default createHonoHandler(app);
