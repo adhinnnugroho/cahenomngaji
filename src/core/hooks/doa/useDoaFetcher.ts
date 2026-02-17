@@ -31,10 +31,27 @@ export const useDoaFetcher = () => {
         }
     }, []);
 
+    const [categoriesReady, setCategoriesReady] = useState(false);
+
+    // Initial load: categories first, then doa list (sequential)
     useEffect(() => {
-        fetchCategories();
-        fetchDoaByCategory(activeCategory);
-    }, [fetchCategories, fetchDoaByCategory, activeCategory]);
+        const init = async () => {
+            await fetchCategories();
+            // small delay to avoid external API rate-limit
+            await new Promise((r) => setTimeout(r, 300));
+            await fetchDoaByCategory(activeCategory);
+            setCategoriesReady(true);
+        };
+        init();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    // Subsequent category changes (only after initial load is done)
+    useEffect(() => {
+        if (categoriesReady) {
+            fetchDoaByCategory(activeCategory);
+        }
+    }, [categoriesReady, activeCategory, fetchDoaByCategory]);
 
     const handleChangeCategory = async (category: string) => {
         setActiveCategory(category);

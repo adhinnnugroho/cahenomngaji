@@ -296,3 +296,14 @@ body {
   border-left: 3px solid var(--color-primary-500);
   background: linear-gradient(90deg, rgba(16, 185, 129, 0.08) 0%, transparent 100%);
 }
+
+/* ============================================
+   PLAYING AYAT HIGHLIGHT
+   ============================================ */
+.ayat-playing {
+  border-left: 3px solid var(--color-primary-500);
+  padding-left: 0.75rem;
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.06) 0%, transparent 60%);
+  border-radius: 0.5rem;
+  transition: all 0.4s ease;
+}
