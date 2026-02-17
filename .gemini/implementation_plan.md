@@ -1,53 +1,57 @@
-# Doa Detail Page — Professional Enterprise Redesign
+# Migration to MyQuran API v3
 
-Redesign `/doa/detail/[id]` with fully separate desktop and mobile experiences, using the existing emerald/amber design system. No blue/purple, no generic AI-look.
+The goal is to update the Sholat feature to use the MyQuran API v3. This involves updating API endpoints, handling the new string-based City IDs (MD5 hashes), and ensuring all related features (search, schedule, countdown) work correctly.
+
+## User Review Required
+> [!IMPORTANT]
+> The new API v3 uses MD5 hashes for City IDs instead of integers. This is a breaking change for the internal API contract of our application. All components depending on numeric `cityId` must be updated to string `cityId`.
+
+> [!WARNING]
+> We need to identify the correct URL structure for fetching schedules in v3. Initial tests with expected formats returned 404. We will confirm the endpoint during implementation.
 
 ## Proposed Changes
 
-### Page Component
+### Configuration
+#### [MODIFY] [.env.local](file:///d:/Projects/next/cahenomngaji/.env.local)
+- Update `REST_API_URL_SCHEDULE` to `https://api.myquran.com/v3`
 
-#### [MODIFY] [\[id\].tsx](file:///d:/Projects/next/cahenomngaji/src/pages/doa/detail/[id].tsx)
+### Backend / API Proxies
+#### [MODIFY] [src/pages/api/geolocation/city/[[...city]].ts](file:///d:/Projects/next/cahenomngaji/src/pages/api/geolocation/city/[[...city]].ts)
+- Update to use the v3 search endpoint.
+- Ensure response format matches what the frontend expects (or update frontend types).
+- v3 Search returns `[{ id: string, lokasi: string }]`.
 
-Rewrite the page to use `MainLayout` with `backHref`/`backTitle` (which already provides desktop sidebar + mobile bottom nav) instead of manually embedding `HeroHeader`. Build two distinct sub-components rendered conditionally:
+#### [MODIFY] [src/pages/api/prayer-schedule/[[...daily]].ts](file:///d:/Projects/next/cahenomngaji/src/pages/api/prayer-schedule/[[...daily]].ts)
+- Update URL construction to use v3 format (once confirmed).
+- Accept `cityId` as string.
 
-**Desktop layout** (`hidden lg:block`):
-- Clean document-style reading layout with sidebar navigation via `MainLayout`
-- Breadcrumb-style back navigation (already in `MainLayout`)
-- Large centered card with generous padding and max-width constraint
-- Structured sections: title badge, Arabic text in a dedicated panel with subtle border, latin transliteration, Indonesian translation — each in clearly separated sections with labels
-- Floating metadata bar showing doa source info
-- Professional typography with proper spacing
+#### [MODIFY] [src/pages/api/geolocation/coordinates/[[...coordinates]].ts](file:///d:/Projects/next/cahenomngaji/src/pages/api/geolocation/coordinates/[[...coordinates]].ts)
+- No major changes expected here as it returns city name, but we verify it feeds correctly into the city search.
 
-**Mobile layout** (`lg:hidden`):
-- Full-screen immersive reading experience
-- Sticky top bar with back button and title
-- Stacked card sections for Arabic, latin, and translation
-- Compact padding, optimized for one-hand scrolling
-- Bottom padding for BottomNavbar clearance
+### Core Logic & Types
+#### [MODIFY] [src/core/api/types/prayer.types.ts](file:///d:/Projects/next/cahenomngaji/src/core/api/types/prayer.types.ts)
+- Update `PrayerScheduleResponse` or relevant interfaces to change ID type from `number` to `string`.
 
-**Shared logic:**
-- Display all available `DoaDetail` fields: `judul`, `arab`, `latin`, `indo`, `doa`, `artinya`
-- Skeleton loading states for both layouts
-- Copy-to-clipboard button for Arabic text
-- Smooth enter animations using existing CSS animation classes
+#### [MODIFY] [src/core/api/prayer.api.ts](file:///d:/Projects/next/cahenomngaji/src/core/api/prayer.api.ts)
+- Update `getDailySchedule` and `getMonthlySchedule` signatures to accept `string` for `cityId`.
 
----
+#### [MODIFY] [src/core/api/geolocation.api.ts](file:///d:/Projects/next/cahenomngaji/src/core/api/geolocation.api.ts)
+- Ensure compatibility with new response types.
 
-### Styles
+#### [MODIFY] [src/core/api/types/geolocation.types.ts](file:///d:/Projects/next/cahenomngaji/src/core/api/types/geolocation.types.ts) (if exists)
+- Update `CityData` type to have `id` as string.
 
-#### [MODIFY] [globals.css](file:///d:/Projects/next/cahenomngaji/src/styles/globals.css)
-
-Add a few utility CSS classes:
-- `.doa-panel` — styled container for Arabic text sections (subtle dark card with left accent border)
-- `.section-label` — small uppercase label style for section headers
-- Copy button success animation keyframe
+### Frontend Hooks
+#### [MODIFY] [src/core/hooks/sholat/useScheduleData.ts](file:///d:/Projects/next/cahenomngaji/src/core/hooks/sholat/useScheduleData.ts)
+- Update state definitions (`city` state, `dailySchedule` state) to handle string IDs.
+- Ensure `fetchLocationAndSchedule` handles the string ID correctly.
 
 ## Verification Plan
+### Automated Tests
+- None currently exist. API endpoints will be tested via browser.
 
-### Browser Test
-1. Run `npm run dev` (or `bun run dev`) to start the dev server
-2. Navigate to `/doa/detail/1` in a desktop-sized viewport (≥1024px) — verify sidebar + document layout
-3. Resize to mobile viewport (<1024px) — verify stacked card layout with sticky header
-4. Confirm all data fields (Arabic, latin, translation) render correctly
-5. Confirm no blue/purple colors appear
-6. Confirm skeleton loading shows briefly on page load
+### Manual Verification
+1. **City Search**: Use the search feature (if available) or verify via logs that city search works.
+2. **Reverse Geocoding**: Allow location access and verify the app correctly identifies the city and fetches the schedule.
+3. **Schedule Display**: Verify the prayer times are displayed correctly for the current date.
+4. **Countdown**: Verify the countdown to the next prayer works.

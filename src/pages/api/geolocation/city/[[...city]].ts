@@ -7,7 +7,7 @@ app.get('/api/geolocation/city/:cityName', async (c) => {
     try {
         const cityName = c.req.param("cityName");
         const encodedCity = encodeURIComponent(cityName);
-        const url = `${process.env.REST_API_URL_SCHEDULE}/sholat/kabkota/cari/${encodedCity}`;
+        const url = `${process.env.REST_API_URL_SCHEDULE}/sholat/kota/cari/${encodedCity}`;
         console.log("[city search] URL:", url, "| cityName:", cityName);
 
         const { data } = await axios.get(url);

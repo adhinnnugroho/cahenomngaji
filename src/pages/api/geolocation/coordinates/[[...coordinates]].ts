@@ -25,15 +25,22 @@ app.get('/api/geolocation/coordinates/:latitude/:longitude', async (event) => {
             (item: any) => item.adminLevel === 4
         );
 
-        const kabupatenKota = adminLevels.find(
+        // Priority 1: Helper to find "Kabupaten" or "Kota" explicitly (Level 4, 5, 6, etc.)
+        const cityLevel = adminLevels.find((item: any) =>
+            /^(Kabupaten|Kota)\s+/i.test(item.name)
+        );
+
+        // Priority 2: Admin Level 6 (Standard for Indo Regency/City)
+        const strictLevel6 = adminLevels.find(
             (item: any) => item.adminLevel === 6
         );
-        // Fallback: try adminLevel 7, then data.city/locality
+
+        // Priority 3: Fallback (Level 7 / Locality - e.g. "Kecamatan ...")
         const fallbackCity = adminLevels.find(
             (item: any) => item.adminLevel === 7
         );
 
-        let cityName = kabupatenKota?.name || fallbackCity?.name || data.city || data.locality || "";
+        let cityName = cityLevel?.name || strictLevel6?.name || fallbackCity?.name || data.city || data.locality || "";
         // Remove "Kabupaten " or "Kota " prefix for cleaner matching with schedule API
         cityName = cityName.replace(/^(Kabupaten|Kota)\s+/i, "");
 

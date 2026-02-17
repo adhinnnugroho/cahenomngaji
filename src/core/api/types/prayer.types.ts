@@ -12,7 +12,7 @@ export interface PrayerSchedule {
 }
 
 export interface PrayerScheduleResponse {
-    id: number;
+    id: string;
     lokasi: string;
     daerah: string;
     jadwal: PrayerSchedule;

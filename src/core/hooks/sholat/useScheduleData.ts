@@ -4,14 +4,13 @@ import { geolocationApi, getRealTimeCoordinates } from "@/core/api/geolocation.a
 import { dateApi } from "@/core/api/date.api";
 import { useDateData } from "@/core/hooks/useDateData";
 import type { PrayerSchedule, NextPrayerInfo } from "@/core/api/types/prayer.types";
-import type { CityData } from "@/core/api/types/geolocation.types";
 
 export type LocationPermissionState = "checking" | "prompt" | "granted" | "denied";
 
 export const useScheduleData = () => {
     const { currentDateInfo, formatDate } = useDateData();
     const [dailySchedule, setDailySchedule] = useState<PrayerSchedule | null>(null);
-    const [city, setCity] = useState<CityData | null>(null);
+    const [coordinates, setCoordinates] = useState<{ lat: number; lng: number } | null>(null);
     const [cityName, setCityName] = useState("");
     const [provinceName, setProvinceName] = useState("");
     const [loading, setLoading] = useState(true);
@@ -28,35 +27,28 @@ export const useScheduleData = () => {
         setLocationError(null);
         try {
             const [latitude, longitude] = await getRealTimeCoordinates();
+            setCoordinates({ lat: latitude, lng: longitude });
             setLocationPermission("granted");
+
+            // Get City Name for display
             const { data: locationRes } = await geolocationApi.getByCoordinates(latitude, longitude);
             const locationData = locationRes.locationData;
 
             if (locationData?.city) {
                 setCityName(locationData.city.name);
                 setProvinceName(locationData.province.name);
-
-                const { data: cityRes } = await geolocationApi.getCityId(locationData.city.name);
-                const cityData = cityRes.data?.[0] as CityData | undefined;
-
-                if (!cityData) {
-                    console.warn("No matching city found for:", locationData.city.name);
-                    setLocationError("Kota tidak ditemukan dalam database jadwal sholat.");
-                    return;
-                }
-
-                setCity(cityData);
-
-                if (cityData.id) {
-                    const { data: scheduleRes } = await prayerApi.getDailySchedule(
-                        cityData.id,
-                        currentDateInfo.year,
-                        currentDateInfo.month,
-                        currentDateInfo.day
-                    );
-                    setDailySchedule(scheduleRes.data.data.jadwal);
-                }
             }
+
+            // Get Schedule using Coordinates (Aladhan)
+            const { data: scheduleRes } = await prayerApi.getScheduleByCoordinates(
+                latitude,
+                longitude,
+                currentDateInfo.year,
+                currentDateInfo.month,
+                currentDateInfo.day
+            );
+            setDailySchedule(scheduleRes.data.jadwal);
+
         } catch (error: any) {
             console.error("Failed to load prayer schedule:", error);
             if (error?.code === 1) {
@@ -126,15 +118,16 @@ export const useScheduleData = () => {
 
     // Change schedule date
     const changeSchedule = async (date: Date) => {
-        if (!city?.id) return;
+        if (!coordinates) return;
         try {
-            const { data } = await prayerApi.getDailySchedule(
-                city.id,
+            const { data } = await prayerApi.getScheduleByCoordinates(
+                coordinates.lat,
+                coordinates.lng,
                 date.getFullYear(),
                 date.getMonth() + 1,
                 date.getDate()
             );
-            setDailySchedule(data.data.data.jadwal);
+            setDailySchedule(data.data.jadwal);
         } catch (error) {
             console.error("Failed to change schedule:", error);
         } finally {
@@ -142,11 +135,11 @@ export const useScheduleData = () => {
         }
     };
 
-    const tanggalStr = dailySchedule?.tanggal?.split(", ")[1];
+    const tanggalStr = dailySchedule?.date || dailySchedule?.tanggal?.split(", ")[1];
 
     const handleDateChange = (direction: number) => {
         if (!tanggalStr) return;
-        const [day, month, year] = tanggalStr.split("/");
+        const [day, month, year] = tanggalStr.replace(/-/g, "/").split("/");
         const currentDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
         currentDate.setDate(currentDate.getDate() + direction);
         const newMonth = currentDate.getMonth() + 1;

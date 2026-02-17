@@ -10,6 +10,6 @@ export interface LocationData {
 }
 
 export interface CityData {
-    id: number;
+    id: string;
     lokasi: string;
 }
