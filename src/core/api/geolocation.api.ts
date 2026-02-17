@@ -7,7 +7,7 @@ export const geolocationApi = {
 
     /** Get city ID for prayer schedule */
     getCityId: (cityName: string) =>
-        httpClient.get(`/api/geolocation/city/${cityName}`),
+        httpClient.get(`/api/geolocation/city/${encodeURIComponent(cityName)}`),
 };
 
 /** Get real-time browser GPS coordinates */

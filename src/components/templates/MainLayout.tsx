@@ -43,8 +43,8 @@ const MainLayout = ({
                                 <Link key={item.href} href={item.href}>
                                     <div
                                         className={`flex items-center gap-3 px-4 py-2.5 rounded-xl cursor-pointer transition-all duration-200 text-sm font-medium ${isActive
-                                                ? "glass-strong text-primary-400"
-                                                : "text-surface-400 hover:text-white hover:bg-surface-800/40"
+                                            ? "glass-strong text-primary-400"
+                                            : "text-surface-400 hover:text-white hover:bg-surface-800/40"
                                             }`}
                                     >
                                         <i className={`${item.icon} text-lg`} />
@@ -67,7 +67,7 @@ const MainLayout = ({
                         </div>
                     )}
                     <div className="w-full flex justify-center">
-                        <div className="w-full max-w-4xl px-8 py-6">{children}</div>
+                        <div className="px-4 py-6">{children}</div>
                     </div>
                 </main>
             </div>

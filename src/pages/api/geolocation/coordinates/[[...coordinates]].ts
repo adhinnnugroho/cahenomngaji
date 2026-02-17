@@ -1,59 +1,69 @@
 import axios from 'axios';
-import { app, createHonoHandler } from '@/core/modulesApi/honoAdapter';
+import { createApp, createHonoHandler } from '@/core/modulesApi/honoAdapter';
+
+const BIGDATACLOUD_URL = `${process.env.REST_API_URL_CITY}`;
+
+const app = createApp();
 
 app.get('/api/geolocation/coordinates/:latitude/:longitude', async (event) => {
     try {
         const latitude = event.req.param("latitude");
         const longitude = event.req.param("longitude");
 
-        const cityUrl = process.env.REST_API_URL_CITY;
+        const { data } = await axios.get(BIGDATACLOUD_URL, {
+            params: {
+                latitude,
+                longitude,
+                localityLanguage: "id",
+            },
+        });
 
-        if (!cityUrl) {
-            return event.json({
-                status: false,
-                statusCode: 500,
-                message: "Configuration error: REST_API_URL_CITY is not set"
-            }, 500);
-        }
+        const adminLevels = data.localityInfo?.administrative || [];
 
-        const { data } = await axios.get(`${cityUrl}?latitude=${latitude}&longitude=${longitude}`);
+        // Extract province (adminLevel 4 = province in Indonesia)
+        const province = adminLevels.find(
+            (item: any) => item.adminLevel === 4
+        );
+
+        const kabupatenKota = adminLevels.find(
+            (item: any) => item.adminLevel === 6
+        );
+        // Fallback: try adminLevel 7, then data.city/locality
+        const fallbackCity = adminLevels.find(
+            (item: any) => item.adminLevel === 7
+        );
+
+        let cityName = kabupatenKota?.name || fallbackCity?.name || data.city || data.locality || "";
+        // Remove "Kabupaten " or "Kota " prefix for cleaner matching with schedule API
+        cityName = cityName.replace(/^(Kabupaten|Kota)\s+/i, "");
+
+        const provinceName = province?.name || data.principalSubdivision || "";
 
         return event.json({
             status: true,
             statusCode: 200,
             message: "Retrieved user location successfully",
             locationData: {
-                city: data.city,
-                province: data.province,
+                city: { name: cityName },
+                province: { name: provinceName },
                 latitude,
                 longitude
             }
         });
     } catch (error: any) {
-
-        if (axios.isAxiosError(error) && error.response?.status === 404) {
-            return event.json({
-                status: false,
-                statusCode: 404,
-                message: "Location not found for supplied coordinates",
-                locationData: null
-            }, 200);
-        }
+        console.error("BigDataCloud reverse geocode error:", error?.message);
 
         const statusCode = axios.isAxiosError(error) && error.response?.status
             ? error.response.status
             : 500;
 
-        const message = axios.isAxiosError(error) && error.response?.data?.message
-            ? error.response.data.message
-            : "Failed to retrieve location data";
-
         return event.json({
             status: false,
             statusCode,
-            message
+            message: "Failed to retrieve location data",
+            locationData: null
         }, 200);
     }
 });
 
-export default createHonoHandler();
+export default createHonoHandler(app);

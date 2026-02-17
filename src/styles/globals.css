@@ -88,6 +88,31 @@ body {
 }
 
 /* ============================================
+   DOA DETAIL PANELS
+   ============================================ */
+.doa-panel {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 3px solid var(--color-primary-500);
+  border-radius: 1rem;
+}
+
+.doa-panel-mobile {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 3px solid var(--color-accent-500);
+  border-radius: 1rem;
+}
+
+.section-label {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ============================================
    GRADIENT UTILITIES
    ============================================ */
 .gradient-primary {

@@ -12,6 +12,8 @@ export interface DoaDetail {
     arab: string;
     latin: string;
     indo: string;
+    doa: string;
+    artinya: string;
 }
 
 export type DoaCategory = string;

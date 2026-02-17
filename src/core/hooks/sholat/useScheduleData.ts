@@ -6,6 +6,8 @@ import { useDateData } from "@/core/hooks/useDateData";
 import type { PrayerSchedule, NextPrayerInfo } from "@/core/api/types/prayer.types";
 import type { CityData } from "@/core/api/types/geolocation.types";
 
+export type LocationPermissionState = "checking" | "prompt" | "granted" | "denied";
+
 export const useScheduleData = () => {
     const { currentDateInfo, formatDate } = useDateData();
     const [dailySchedule, setDailySchedule] = useState<PrayerSchedule | null>(null);
@@ -13,46 +15,114 @@ export const useScheduleData = () => {
     const [cityName, setCityName] = useState("");
     const [provinceName, setProvinceName] = useState("");
     const [loading, setLoading] = useState(true);
+    const [locationError, setLocationError] = useState<string | null>(null);
     const [currentPrayer, setCurrentPrayer] = useState("");
     const [nextPrayer, setNextPrayer] = useState<NextPrayerInfo>({ name: "", time: null });
     const [timeToNextPrayer, setTimeToNextPrayer] = useState("");
     const [hijriDate, setHijriDate] = useState("");
+    const [locationPermission, setLocationPermission] = useState<LocationPermissionState>("checking");
 
     // Fetch initial data
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const [latitude, longitude] = await getRealTimeCoordinates();
-                const { data: locationRes } = await geolocationApi.getByCoordinates(latitude, longitude);
-                const locationData = locationRes.locationData;
+    const fetchLocationAndSchedule = useCallback(async () => {
+        setLoading(true);
+        setLocationError(null);
+        try {
+            const [latitude, longitude] = await getRealTimeCoordinates();
+            setLocationPermission("granted");
+            const { data: locationRes } = await geolocationApi.getByCoordinates(latitude, longitude);
+            const locationData = locationRes.locationData;
 
-                if (locationData?.city) {
-                    setCityName(locationData.city.name);
-                    setProvinceName(locationData.province.name);
+            if (locationData?.city) {
+                setCityName(locationData.city.name);
+                setProvinceName(locationData.province.name);
 
-                    const { data: cityRes } = await geolocationApi.getCityId(locationData.city.name);
-                    const cityData = cityRes.data[0] as CityData;
-                    setCity(cityData);
+                const { data: cityRes } = await geolocationApi.getCityId(locationData.city.name);
+                const cityData = cityRes.data?.[0] as CityData | undefined;
 
-                    if (cityData?.id) {
-                        const { data: scheduleRes } = await prayerApi.getDailySchedule(
-                            cityData.id,
-                            currentDateInfo.year,
-                            currentDateInfo.month,
-                            currentDateInfo.day
-                        );
-                        setDailySchedule(scheduleRes.data.data.jadwal);
-                    }
+                if (!cityData) {
+                    console.warn("No matching city found for:", locationData.city.name);
+                    setLocationError("Kota tidak ditemukan dalam database jadwal sholat.");
+                    return;
                 }
-            } catch (error) {
-                console.error("Failed to load prayer schedule:", error);
-            } finally {
+
+                setCity(cityData);
+
+                if (cityData.id) {
+                    const { data: scheduleRes } = await prayerApi.getDailySchedule(
+                        cityData.id,
+                        currentDateInfo.year,
+                        currentDateInfo.month,
+                        currentDateInfo.day
+                    );
+                    setDailySchedule(scheduleRes.data.data.jadwal);
+                }
+            }
+        } catch (error: any) {
+            console.error("Failed to load prayer schedule:", error);
+            if (error?.code === 1) {
+                setLocationPermission("denied");
+                setLocationError("Akses lokasi ditolak. Silakan izinkan akses lokasi di pengaturan browser Anda.");
+            } else if (error?.code === 2) {
+                setLocationError("Lokasi tidak tersedia. Pastikan GPS aktif.");
+            } else if (error?.code === 3) {
+                setLocationError("Permintaan lokasi timeout. Silakan coba lagi.");
+            } else {
+                setLocationError("Gagal memuat jadwal sholat. Silakan coba lagi.");
+            }
+        } finally {
+            setLoading(false);
+        }
+    }, [currentDateInfo.year, currentDateInfo.month, currentDateInfo.day]);
+
+    // Check permission status on mount, only auto-fetch if already granted
+    useEffect(() => {
+        const checkPermission = async () => {
+            try {
+                if (navigator.permissions) {
+                    const status = await navigator.permissions.query({ name: "geolocation" });
+                    if (status.state === "granted") {
+                        setLocationPermission("granted");
+                        fetchLocationAndSchedule();
+                    } else if (status.state === "denied") {
+                        setLocationPermission("denied");
+                        setLocationError("Akses lokasi ditolak. Silakan izinkan akses lokasi di pengaturan browser Anda.");
+                        setLoading(false);
+                    } else {
+                        // "prompt" — wait for user action
+                        setLocationPermission("prompt");
+                        setLoading(false);
+                    }
+
+                    // Listen for permission changes
+                    status.addEventListener("change", () => {
+                        if (status.state === "granted") {
+                            setLocationPermission("granted");
+                            fetchLocationAndSchedule();
+                        } else if (status.state === "denied") {
+                            setLocationPermission("denied");
+                            setLocationError("Akses lokasi ditolak. Silakan izinkan akses lokasi di pengaturan browser Anda.");
+                        }
+                    });
+                } else {
+                    // Fallback: Permissions API not supported, just request directly
+                    setLocationPermission("prompt");
+                    setLoading(false);
+                }
+            } catch {
+                // Fallback if permissions query fails
+                setLocationPermission("prompt");
                 setLoading(false);
             }
         };
 
-        fetchData();
-    }, [currentDateInfo.year, currentDateInfo.month, currentDateInfo.day]);
+        checkPermission();
+    }, [fetchLocationAndSchedule]);
+
+    // Called when user clicks "Izinkan Lokasi" button
+    const requestLocationPermission = useCallback(() => {
+        setLocationPermission("checking");
+        fetchLocationAndSchedule();
+    }, [fetchLocationAndSchedule]);
 
     // Change schedule date
     const changeSchedule = async (date: Date) => {
@@ -182,6 +252,10 @@ export const useScheduleData = () => {
         cityName,
         provinceName,
         loading,
+        locationError,
+        locationPermission,
+        requestLocationPermission,
+        retryLocation: fetchLocationAndSchedule,
         tanggalStr,
         currentPrayer,
         nextPrayer,

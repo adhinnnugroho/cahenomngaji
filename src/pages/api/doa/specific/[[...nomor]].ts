@@ -1,5 +1,7 @@
 import instance from '@/core/api/http-client';
-import { app, createHonoHandler } from '@/core/modulesApi/honoAdapter';
+import { createApp, createHonoHandler } from '@/core/modulesApi/honoAdapter';
+
+const app = createApp();
 
 app.get('/api/doa/specific/:number', async (c) => {
     try {
@@ -17,4 +19,4 @@ app.get('/api/doa/specific/:number', async (c) => {
     }
 })
 
-export default createHonoHandler();
+export default createHonoHandler(app);

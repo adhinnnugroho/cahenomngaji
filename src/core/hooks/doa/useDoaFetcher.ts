@@ -12,7 +12,8 @@ export const useDoaFetcher = () => {
     const fetchCategories = useCallback(async () => {
         try {
             const { data } = await doaApi.getTypes();
-            setDoaCategories(data.data ?? []);
+            const categories = data.data;
+            setDoaCategories(Array.isArray(categories) ? categories : []);
         } catch (error) {
             console.error("Failed to fetch doa categories:", error);
         } finally {
@@ -23,7 +24,8 @@ export const useDoaFetcher = () => {
     const fetchDoaByCategory = useCallback(async (category: string) => {
         try {
             const { data } = await doaApi.getBySumber(category);
-            setDoaList(data.data ?? []);
+            const list = data.data;
+            setDoaList(Array.isArray(list) ? list : []);
         } catch (error) {
             console.error("Failed to fetch doa list:", error);
         }
@@ -47,7 +49,8 @@ export const useDoaFetcher = () => {
                 const totals = await Promise.all(
                     doaTypes.slice(0, typeIndex).map(async (type) => {
                         const { data } = await doaApi.getBySumber(type);
-                        return (data.data ?? []).length;
+                        const items = data.data;
+                        return (Array.isArray(items) ? items : []).length;
                     })
                 );
                 setStartIndex(totals.reduce((sum, count) => sum + count, 0));

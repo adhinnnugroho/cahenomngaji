@@ -1,8 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Hono } from 'hono';
 
-const app = new Hono();
-export function createHonoHandler() {
+export function createApp() {
+    return new Hono();
+}
+
+export function createHonoHandler(app: Hono) {
     return async function handler(req: NextApiRequest, res: NextApiResponse) {
         const request = new Request(`http://${req.headers.host}${req.url}`, {
             method: req.method,
@@ -17,5 +20,3 @@ export function createHonoHandler() {
         res.send(body);
     };
 }
-
-export { app };
